@@ -1,4 +1,3 @@
-# Image args should come at the beginning.
 ARG BASE_IMAGE
 ARG PREBUILT_BASE_IMAGE
 # hadolint ignore=DL3006
@@ -30,6 +29,7 @@ RUN mkdir -p ~/.ssh \
 RUN --mount=type=ssh \
   ./setup-dev-env.sh -y $SETUP_ARGS universe \
   && pip uninstall -y ansible ansible-core \
+  && pip install vcstool \
   && mkdir src \
   && vcs import src < autoware.repos \
   && rosdep update \
@@ -79,10 +79,8 @@ ARG SETUP_ARGS
 ## Install apt packages
 # hadolint ignore=DL3008
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
-  git \
   ssh \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+  && apt-get clean
 
 ## Copy files
 COPY autoware.repos setup-dev-env.sh ansible-galaxy-requirements.yaml amd64.env arm64.env /autoware/
@@ -90,31 +88,25 @@ COPY ansible/ /autoware/ansible/
 WORKDIR /autoware
 RUN ls /autoware
 
-## Add GitHub to known hosts for private repositories
-RUN mkdir -p ~/.ssh \
-  && ssh-keyscan github.com >> ~/.ssh/known_hosts
+## Copy src and install folder from builder
+COPY --from=builder /autoware/src/ /autoware/src/ \
+     --from=builder /autoware/install/ /autoware/install/
 
 ## Set up runtime environment
 RUN --mount=type=ssh \
   ./setup-dev-env.sh -y $SETUP_ARGS --no-cuda-drivers --runtime universe \
   && pip uninstall -y ansible ansible-core \
-  && mkdir src \
-  && vcs import src < autoware.repos \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \
-  && rm -rf src \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-## Copy install folder from builder
-COPY --from=builder /autoware/install/ /autoware/install/
+  && apt-get clean
 
 ## Clean up unnecessary files
 RUN rm -rf \
   "$HOME"/.cache \
   /etc/apt/sources.list.d/cuda*.list \
   /etc/apt/sources.list.d/docker.list \
-  /etc/apt/sources.list.d/nvidia-docker.list
+  /etc/apt/sources.list.d/nvidia-docker.list \
+  /var/lib/apt/lists/*
 
 ## Register Vulkan GPU vendors
 ADD "https://gitlab.com/nvidia/container-images/vulkan/raw/dc389b0445c788901fda1d85be96fd1cb9410164/nvidia_icd.json" /etc/vulkan/icd.d/nvidia_icd.json

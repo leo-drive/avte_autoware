@@ -41,7 +41,7 @@
   register: dash_case_cuda_version
   changed_when: false
 
-- name: Install CUDA libraries except for cuda-drivers
+- name: Install CUDA with devel libraries except for cuda-drivers
   become: true
   ansible.builtin.apt:
     name:
@@ -54,6 +54,23 @@
       - libnpp-dev-{{ dash_case_cuda_version.stdout }}
       - libcusparse-dev-{{ dash_case_cuda_version.stdout }}
       - libcublas-dev-{{ dash_case_cuda_version.stdout }}
+      - libnccl-dev
+    update_cache: true
+  when: install_devel == 'true'
+
+- name: Install CUDA libraries except for cuda-drivers
+  become: true
+  ansible.builtin.apt:
+    name:
+      - cuda-cudart-{{ dash_case_cuda_version.stdout }}
+      - cuda-command-line-tools-{{ dash_case_cuda_version.stdout }}
+      - cuda-minimal-build-{{ dash_case_cuda_version.stdout }}
+      - cuda-libraries-{{ dash_case_cuda_version.stdout }}
+      - cuda-nvml-dev-{{ dash_case_cuda_version.stdout }}
+      - cuda-nvprof-{{ dash_case_cuda_version.stdout }}
+      - libnpp-{{ dash_case_cuda_version.stdout }}
+      - libcusparse-{{ dash_case_cuda_version.stdout }}
+      - libcublas-{{ dash_case_cuda_version.stdout }}
       - libnccl-dev
     update_cache: true
 

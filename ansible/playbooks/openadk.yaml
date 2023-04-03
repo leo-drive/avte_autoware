@@ -1,0 +1,32 @@
+- hosts: localhost
+  connection: local
+  pre_tasks:
+    - name: Verify OS
+      ansible.builtin.fail:
+        msg: Only Ubuntu 22.04 is supported for this branch. Please refer to https://autowarefoundation.github.io/autoware-documentation/main/installation/autoware/source-installation/.
+      when: ansible_distribution_version != '22.04'
+
+    - name: Print args
+      ansible.builtin.debug:
+        msg:
+          - module: "{{ awfmodule }}"
+          - rosdistro: "{{ rosdistro }}"
+          - rmw_implementation: "{{ rmw_implementation }}"
+          - cuda_version: "{{ cuda_version }}"
+          - cudnn_version: "{{ cudnn_version }}"
+          - tensorrt_version: "{{ tensorrt_version }}"
+  roles:
+    # Autoware Universe dependencies
+    - role: autoware.dev_env.ros2
+    - role: autoware.dev_env.rmw_implementation
+    - role: autoware.dev_env.gdown
+
+    # Module specific dependencies
+    - role: autoware.dev_env.geographiclib
+      when: module == 'perception' or module == 'localization'
+    - role: autoware.dev_env.cuda
+      when: module == 'perception'
+    - role: autoware.dev_env.tensorrt
+      when: module == 'perception'
+    - role: autoware.dev_env.pacmod
+      when: module == 'control'

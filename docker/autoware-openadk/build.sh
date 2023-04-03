@@ -3,21 +3,22 @@
 set -e
 
 SCRIPT_DIR=$(readlink -f "$(dirname "$0")")
-WORKSPACE_ROOT="$SCRIPT_DIR/../"
+WORKSPACE_ROOT="$SCRIPT_DIR/../../"
 
 # Parse arguments
 args=()
 while [ "$1" != "" ]; do
     case "$1" in
-    --no-cuda)
-        option_no_cuda=true
-        ;;
     --platform)
         option_platform="$2"
         shift
         ;;
-    --no-prebuilt)
-        option_no_prebuilt=true
+    --module)
+        option_module="$2"
+        shift
+        ;;
+    --build-devel)
+        build_devel=true
         ;;
     *)
         args+=("$1")
@@ -42,20 +43,11 @@ if [ "$platform" = "linux/arm64" ]; then
     source "$WORKSPACE_ROOT/arm64.env"
 fi
 
-# Set CUDA options
-if [ "$option_no_cuda" = "true" ]; then
-    setup_args="--no-nvidia"
-    image_name_suffix=""
+# Set targets
+if [ "$build_devel" = "true" ]; then
+    targets=("devel, runtime")
 else
-    setup_args="--no-cuda-drivers"
-    image_name_suffix="-cuda"
-fi
-
-# Set prebuilt options
-if [ "$option_no_prebuilt" = "true" ]; then
-    targets=("devel")
-else
-    # default targets include devel and prebuilt
+    # default target only includes runtime
     targets=()
 fi
 
@@ -63,15 +55,15 @@ fi
 export BUILDKIT_STEP_LOG_MAX_SIZE=10000000
 
 set -x
-docker buildx bake --no-cache --load --progress=plain -f "$SCRIPT_DIR/autoware-universe/docker-bake.hcl" \
+docker buildx bake --no-cache --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "*.context=$WORKSPACE_ROOT" \
     --set "*.ssh=default" \
     --set "*.platform=$platform" \
     --set "*.args.ROS_DISTRO=$rosdistro" \
     --set "*.args.BASE_IMAGE=$base_image" \
     --set "*.args.PREBUILT_BASE_IMAGE=$prebuilt_base_image" \
-    --set "*.args.SETUP_ARGS=$setup_args" \
-    --set "devel.tags=ghcr.io/autowarefoundation/autoware-universe:$rosdistro-latest$image_name_suffix-local" \
-    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-universe:$rosdistro-latest-prebuilt$image_name_suffix-local" \
+    --set "*.args.MODULE=$option_module" \
+    --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:$rosdistro-latest-devel-local" \
+    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:$rosdistro-latest-runtime-local" \
     "${targets[@]}"
 set +x
