@@ -27,7 +27,7 @@ RUN mkdir -p ~/.ssh \
 
 ## Set up development environment
 RUN --mount=type=ssh \
-  ./setup-dev-env.sh -y $MODULE --runtime openadk 
+  ./setup-dev-env.sh -y --module $MODULE openadk 
   # && pip uninstall -y ansible ansible-core \
   # && pip install vcstool \
   # && mkdir src \
@@ -61,6 +61,7 @@ RUN --mount=type=ssh \
 # CMD ["/bin/bash"]
 
 # FROM devel as builder
+# LABEL stage=builder
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # ## Build and change permission for runtime data conversion
@@ -89,12 +90,12 @@ ARG SETUP_ARGS
 # RUN ls /autoware
 
 # ## Copy src and install folder from builder
-# COPY --from=builder /autoware/src/ /autoware/src/ \
-#      --from=builder /autoware/install/ /autoware/install/
+# COPY --from=builder /autoware/src/ /autoware/src/
+# COPY --from=builder /autoware/install/ /autoware/install/
 
 # ## Set up runtime environment
 # RUN --mount=type=ssh \
-#   ./setup-dev-env.sh -y $SETUP_ARGS --no-cuda-drivers --runtime openadk \
+# ./setup-dev-env.sh -y --module $MODULE --no-cuda-drivers --runtime openadk \
 #   && pip uninstall -y ansible ansible-core
 #   # && rosdep update \
 #   # && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \

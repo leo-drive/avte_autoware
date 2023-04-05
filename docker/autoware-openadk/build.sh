@@ -17,8 +17,8 @@ while [ "$1" != "" ]; do
         option_module="$2"
         shift
         ;;
-    --build-devel)
-        build_devel=true
+    --no-devel)
+        option_no_devel=true
         ;;
     *)
         args+=("$1")
@@ -43,11 +43,16 @@ if [ "$platform" = "linux/arm64" ]; then
     source "$WORKSPACE_ROOT/arm64.env"
 fi
 
-# Set targets
-if [ "$build_devel" = "true" ]; then
-    targets=("devel, runtime")
+# Set default module if not specified
+if [ -z "$option_module" ]; then
+    option_module="all"
+fi
+
+# Set build targets
+if [ "$option_no_devel" = "true" ]; then
+    targets=("runtime")
 else
-    # default target only includes runtime
+    # default target includes devel and runtime
     targets=()
 fi
 
@@ -66,4 +71,7 @@ docker buildx bake --no-cache --load --progress=plain -f "$SCRIPT_DIR/docker-bak
     --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:$rosdistro-latest-devel-local" \
     --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:$rosdistro-latest-runtime-local" \
     "${targets[@]}"
+
+# Remove intermediate images
+docker image prune --filter label=stage=builder
 set +x

@@ -19,6 +19,10 @@ while [ "$1" != "" ]; do
         # Enable debug outputs.
         option_verbose=true
         ;;
+    --module)
+        option_module="$2"
+        shift
+        ;;
     --no-nvidia)
         # Disable installation of the NVIDIA-related roles ('cuda' and 'tensorrt').
         option_no_nvidia=true
@@ -67,6 +71,11 @@ fi
 # Check verbose option
 if [ "$option_verbose" = "true" ]; then
     ansible_args+=("-vvv")
+fi
+
+# Check module option
+if [ "$option_module" != "" ]; then
+    ansible_args+=("--extra-vars" "module=$option_module")
 fi
 
 # Check installation of NVIDIA libraries

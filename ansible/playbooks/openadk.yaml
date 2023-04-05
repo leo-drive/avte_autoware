@@ -16,17 +16,25 @@
           - cudnn_version: "{{ cudnn_version }}"
           - tensorrt_version: "{{ tensorrt_version }}"
   roles:
-    # Autoware Universe dependencies
+    # Autoware Universe default dependencies
     - role: autoware.dev_env.ros2
     - role: autoware.dev_env.rmw_implementation
     - role: autoware.dev_env.gdown
 
     # Module specific dependencies
     - role: autoware.dev_env.geographiclib
-      when: module == 'perception' or module == 'localization'
+      when: module == 'perception' or module == 'localization' or module == 'all'
     - role: autoware.dev_env.cuda
-      when: module == 'perception'
+      when: module == 'perception' or module == 'all'
     - role: autoware.dev_env.tensorrt
-      when: module == 'perception'
+      when: module == 'perception' or module == 'all'
     - role: autoware.dev_env.pacmod
-      when: module == 'control'
+      when: module == 'control' or module == 'all'
+  
+   # Devel dependencies
+    - role: autoware.dev_env.ccache
+      when: install_devel == 'true'
+    - role: autoware.dev_env.plotjuggler
+      when: install_devel == 'true'
+    - role: autoware.dev_env.pre_commit
+      when: install_devel == 'true'

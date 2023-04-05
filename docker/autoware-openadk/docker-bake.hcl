@@ -1,6 +1,5 @@
-target "default" {
-  dockerfile = "docker/autoware-openadk/Dockerfile"
-  target = "runtime"
+group "default" {
+  targets = ["devel", "runtime"]
 }
 
 // For docker/metadata-action
