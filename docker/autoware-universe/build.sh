@@ -3,7 +3,7 @@
 set -e
 
 SCRIPT_DIR=$(readlink -f "$(dirname "$0")")
-WORKSPACE_ROOT="$SCRIPT_DIR/../"
+WORKSPACE_ROOT="$SCRIPT_DIR/../../"
 
 # Parse arguments
 args=()
@@ -71,7 +71,7 @@ docker buildx bake --no-cache --load --progress=plain -f "$SCRIPT_DIR/autoware-u
     --set "*.args.BASE_IMAGE=$base_image" \
     --set "*.args.PREBUILT_BASE_IMAGE=$prebuilt_base_image" \
     --set "*.args.SETUP_ARGS=$setup_args" \
-    --set "devel.tags=ghcr.io/autowarefoundation/autoware-universe:$rosdistro-latest$image_name_suffix-local" \
-    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-universe:$rosdistro-latest-prebuilt$image_name_suffix-local" \
+    --set "devel.tags=ghcr.io/autowarefoundation/autoware-universe:$rosdistro-latest$image_name_suffix" \
+    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-universe:$rosdistro-latest-prebuilt$image_name_suffix" \
     "${targets[@]}"
 set +x

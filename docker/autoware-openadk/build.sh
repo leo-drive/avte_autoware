@@ -68,10 +68,7 @@ docker buildx bake --no-cache --load --progress=plain -f "$SCRIPT_DIR/docker-bak
     --set "*.args.BASE_IMAGE=$base_image" \
     --set "*.args.PREBUILT_BASE_IMAGE=$prebuilt_base_image" \
     --set "*.args.MODULE=$option_module" \
-    --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:$rosdistro-latest-devel-local" \
-    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:$rosdistro-latest-runtime-local" \
+    --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:$option_module-$rosdistro-latest-devel" \
+    --set "runtime.tags=ghcr.io/autowarefoundation/autoware-openadk:$option_module-$rosdistro-latest-runtime" \
     "${targets[@]}"
-
-# Remove intermediate images
-docker image prune --filter label=stage=builder
 set +x

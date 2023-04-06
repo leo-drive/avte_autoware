@@ -1,4 +1,4 @@
-# Autoware Open AD Kit Demo
+# Autoware Open AD Kit
 ### Roadmap
     - Ver1: AVA - FW(bootloader) - EWAOL - OpenAdkit1(Includes OS/ROS/AUTOWARE)
     

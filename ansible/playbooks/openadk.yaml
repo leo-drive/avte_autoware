@@ -9,7 +9,7 @@
     - name: Print args
       ansible.builtin.debug:
         msg:
-          - module: "{{ awfmodule }}"
+          - module: "{{ module }}"
           - rosdistro: "{{ rosdistro }}"
           - rmw_implementation: "{{ rmw_implementation }}"
           - cuda_version: "{{ cuda_version }}"
@@ -37,4 +37,6 @@
     - role: autoware.dev_env.plotjuggler
       when: install_devel == 'true'
     - role: autoware.dev_env.pre_commit
+      when: install_devel == 'true'
+    - role: autoware.dev_env.ros2_dev_tools
       when: install_devel == 'true'
