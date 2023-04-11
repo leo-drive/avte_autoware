@@ -31,15 +31,15 @@ done
 if [ -n "$option_platform" ]; then
     platform="$option_platform"
 else
-    platform="linux/amd64"
+    platform="x86_64"
     if [ "$(uname -m)" = "aarch64" ]; then
-        platform="linux/arm64"
+        platform="aarch64"
     fi
 fi
 
 # Load platform specific dependencies
 source "$WORKSPACE_ROOT/amd64.env"
-if [ "$platform" = "linux/arm64" ]; then
+if [ "$platform" = "aarch64" ]; then
     source "$WORKSPACE_ROOT/arm64.env"
 fi
 

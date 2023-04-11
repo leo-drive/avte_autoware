@@ -75,6 +75,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG ROS_DISTRO
 ARG MODULE
+ARG PLATFORM
 
 # Copy files
 COPY autoware.repos setup-dev-env.sh ansible-galaxy-requirements.yaml amd64.env arm64.env /autoware/
@@ -100,7 +101,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-ins
 # Set up runtime environment
 # TODO: Run rosdep install only for the specified modules
 RUN --mount=type=ssh \
-  ./setup-dev-env.sh -y --module $MODULE --no-cuda-drivers --runtime openadk \
+  ./setup-dev-env.sh -y --module "$MODULE" --no-cuda-drivers --runtime openadk \
   && pip uninstall -y ansible ansible-core \
   && pip install vcstool \
   && mkdir src \
@@ -108,7 +109,7 @@ RUN --mount=type=ssh \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \ 
   && apt-get clean \
-  && find /usr/lib/x86_64-linux-gnu -name "*.a" -type f -delete \
+  && find /usr/lib/"$PLATFORM"-linux-gnu -name "*.a" -type f -delete \
   && find / -name "*.o" -type f -delete \
   && find / -name "*.h" -type f -delete \
   && find / -name "*.hpp" -type f -delete \
