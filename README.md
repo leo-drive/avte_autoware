@@ -4,7 +4,7 @@ The Open AD Kit is a collaborative project developed by the [Autoware Foundation
 
 The Open AD Kit utilizes Autoware components, which are built using the [ROS2 framework](https://docs.ros.org/en/humble/index.html), to create a practical application demonstrating how [SOAFEE](https://www.soafee.io/)'s vision of software-defined vehicles can be realized. ROS2, with its microservices architecture, provides the foundation for this effort. Open AD Kit application can also communicate with other containerized applications to support various functionalities, such as providing a bi-directional data pipeline and providing up-to-date maps to be consumed within the Open AD Kit application.
 
-![AD Kit Architecture](https://URL-to-image)
+![AD Kit Architecture](https://user-images.githubusercontent.com/21222428/231436248-f745830d-a74f-42e0-8afe-fd58f6dbc8fc.jpg))![awf-openadk-diagram]
 
 ## Documentation
 
