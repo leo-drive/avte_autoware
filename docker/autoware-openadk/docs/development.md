@@ -1,8 +1,8 @@
 ## TO-DO
+- [ ] We can use DPDK for DDS communication to improve performance and reduce latency on distributed architectures. https://ieeexplore.ieee.org/document/10074877
 - [ ] Build only the required packages for the target module in builder stage
 - [ ] Run rosdep only for the required packages for the target module in builder stage
 - [ ] Try https://github.com/slimtoolkit/slim to reduce the size of the images
-- [ ] QEMU docker image for ARM64v8 for ARM neoverse based platforms
 - [ ] Create new ros2 launch files for docker images
 - [ ] Create new docker-compose files for docker images
 - [ ] Rosdep installs all dependencies not only exec_depend's. It should be fixed to install only exec_depend's.
