@@ -6,12 +6,13 @@ The Open AD Kit utilizes Autoware components, which are built using the [ROS2 fr
 
 ![AD Kit Architecture](https://user-images.githubusercontent.com/21222428/231436248-f745830d-a74f-42e0-8afe-fd58f6dbc8fc.jpg)
 
+
+## Using Open AD Kit
+TODO
+
 ## Further Documentation
 
 To learn more technical details about Autoware,SOAFEE refer to the [Autoware documentation site](https://autowarefoundation.github.io/autoware-documentation/main/), [SOAFEE documentation site](https://gitlab.com/soafee/blueprints).
-
-## Using Open AD Kit
-
 
 ## Useful resources
 - [AVA Developer Platform](https://www.adlinktech.com/Products/Computer_on_Modules/COM-HPC-Server-Carrier-and-Starter-Kit/AVA_Developer_Platform)
