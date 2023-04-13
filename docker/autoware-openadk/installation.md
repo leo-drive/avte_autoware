@@ -1,12 +1,4 @@
-# Autoware Open AD Kit
-### Roadmap
-    - Ver1: AVA - FW(bootloader) - EWAOL - OpenAdkit1(Includes OS/ROS/AUTOWARE)
-    
-    - Ver2: AVA - FW(bootloader) - EWAOL - Container(OS/ROS/AUTOWARE)+eSync OTA agent
-
-    - Ver3(Demo): AVA - FW(bootloader) - EWAOL - Container(OS/ROS/Sensing+Perception)+eSync OTA agent
-        Host PC: AVA-DEV-Platform - ARM Neoverse N1 based Development Platform
-        Edge Device: RQX-58G - Jetson AGX Xavier based Robotic Controller
+# Open AD Kit Prerequisites Installation Guide
 
 ### Prerequisites
 - Ubuntu 20.04 or 22.04
