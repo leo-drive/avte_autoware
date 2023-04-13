@@ -26,7 +26,7 @@ Open AD Kit as a software-defined vehicle platform is built upon the [AVA Develo
 
 ### Software Prerequisites
 
-Open AD Kit built upon EWAOL which provides all the necessary software dependencies. But it can be deployed on a platform which meets the hardware prerequisites. The following table shows the minimum software requirements for Open AD Kit.
+Open AD Kit built upon [EWAOL](https://gitlab.com/soafee/ewaol/meta-ewaol) which provides all the necessary software dependencies. But it can be deployed on a platform which meets the hardware prerequisites. The following table shows the minimum software requirements for Open AD Kit.
 
 | Software | Minimum Requirements |
 | --- | --- |
