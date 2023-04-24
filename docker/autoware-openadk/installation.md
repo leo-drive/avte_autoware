@@ -23,6 +23,25 @@
         sudo apt install nvidia-driver-510 # can be 515,520 etc.
         sudo reboot
         ```
+    
+    - If you have multiple gpu cards, you can select the one you want to use with prime-select
+        ```bash
+        sudo prime-select nvidia
+        sudo reboot
+        ```
+
+    - To Check if the driver is installed correctly
+        ```bash
+        nvidia-smi
+        ```
+
+    - You can remove the old drivers and all dependencies with the following commands \
+      to install other driver
+        ```bash 
+        sudo apt-get-autoremove --purge '^nvidia-.*'
+        sudo apt-get-autoremove --purge '^libnvidia-.*'
+        sudo apt-get-autoremove --purge '^cuda-.*'
+        ```
 
 2. Install Nvidia Container Toolkit
 

@@ -73,7 +73,7 @@
       - libcublas-{{ dash_case_cuda_version.stdout }}
       - libnccl2 # test!
     update_cache: true
-  when: install_devel == 'false'
+  # when: install_devel == 'false'
 
 - name: Install cuda-drivers
   become: true

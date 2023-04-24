@@ -89,6 +89,10 @@ COPY --from=builder /autoware/install/ /autoware/install/
 WORKDIR /autoware
 RUN ls /autoware
 
+# Bugfix rviz2 black-screen problem with some nvidia drivers: https://github.com/ros2/rviz/issues/948
+RUN apt update && apt install -y software-properties-common && add-apt-repository ppa:kisak/kisak-mesa && apt install -y \
+  libegl-mesa0 libegl1-mesa-dev libgbm-dev libgbm1 libgl1-mesa-dev libgl1-mesa-dri libglapi-mesa libglx-mesa0
+
 # Install apt packages and Add GitHub to known hosts for private repositories
 # hadolint ignore=DL3008
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
