@@ -64,6 +64,7 @@ docker buildx bake --no-cache --load --progress=plain -f "$SCRIPT_DIR/docker-bak
     --set "*.context=$WORKSPACE_ROOT" \
     --set "*.ssh=default" \
     --set "*.platform=$platform" \
+    --set "*.args.PLATFORM=$platform" \
     --set "*.args.ROS_DISTRO=$rosdistro" \
     --set "*.args.BASE_IMAGE=$base_image" \
     --set "*.args.PREBUILT_BASE_IMAGE=$prebuilt_base_image" \
