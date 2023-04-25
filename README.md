@@ -36,16 +36,47 @@ Open AD Kit built upon [EWAOL](https://gitlab.com/soafee/ewaol/meta-ewaol) which
 | Docker | 19.03.13 |
 | Docker Compose | 1.27.4 |
 
-Detailed instructions on how to install the software prerequisites can be found in the [Open AD Kit Prerequisites Installation Guide](https://github.com/leo-drive/avte_autoware/blob/main/docker/autoware-openadk/installation.md).
+Detailed instructions on how to install the software prerequisites can be found in the [Open AD Kit Prerequisites Installation Guide](https://github.com/leo-drive/avte_autoware/blob/main/docker/autoware-openadk/docs/installation.md).
 
 ### Build
 
+To build the Open AD Kit application, run the following command:
+
+```bash
+cd docker/autoware-openadk
+./build.sh # can give --module <module_name> to build a specific module, by default monolithic build is performed
+```
+
 ### Run
+
+To run the Open AD Kit monolithic docker image:
+
+```bash
+cd docker/autoware-openadk
+./run.sh
+```
 
 ### Test
 
-### Deploy
+To test the Open AD Kit monolithic image using pre-installed simulation data, once you enter the docker container:
 
+- Run the following command for the planning simulation:
+
+  ```bash
+  awf-launch-sample-planning-sim
+  ```
+
+- For the rosbag replay simulation, run the following command:
+
+  ```bash
+  awf-launch-sample-replay-sim
+  ```
+
+  - And to replay the sample rosbag from another terminal:
+
+    ```bash
+    awf-replay-sample-rosbag
+    ```
 
 ## Further Documentation
 
