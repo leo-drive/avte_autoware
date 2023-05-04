@@ -13,10 +13,6 @@ while [ "$1" != "" ]; do
         option_platform="$2"
         shift
         ;;
-    --module)
-        option_module="$2"
-        shift
-        ;;
     --no-devel)
         option_no_devel=true
         ;;
@@ -43,11 +39,6 @@ if [ "$platform" = "aarch64" ]; then
     source "$WORKSPACE_ROOT/arm64.env"
 fi
 
-# Set default module if not specified
-if [ -z "$option_module" ]; then
-    option_module="all"
-fi
-
 # Set build targets
 if [ "$option_no_devel" = "true" ]; then
     targets=("runtime")
@@ -59,17 +50,35 @@ fi
 # https://github.com/docker/buildx/issues/484
 export BUILDKIT_STEP_LOG_MAX_SIZE=10000000
 
+# Export variables
+export platform
+export rosdistro
+
 set -x
-docker buildx bake --no-cache --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
-    --set "*.context=$WORKSPACE_ROOT" \
-    --set "*.ssh=default" \
-    --set "*.platform=$platform" \
-    --set "*.args.PLATFORM=$platform" \
-    --set "*.args.ROS_DISTRO=$rosdistro" \
-    --set "*.args.BASE_IMAGE=$base_image" \
-    --set "*.args.PREBUILT_BASE_IMAGE=$prebuilt_base_image" \
-    --set "*.args.MODULE=$option_module" \
-    --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:$option_module-$rosdistro-latest-devel" \
-    --set "runtime.tags=ghcr.io/autowarefoundation/autoware-openadk:$option_module-$rosdistro-latest-runtime" \
-    "${targets[@]}"
+# Build base images
+# docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl" \
+#     --set "*.context=$WORKSPACE_ROOT" \
+#     --set "*.ssh=default" \
+#     --set "*.platform=$platform" \
+#     --set "*.args.PLATFORM=$platform" \
+#     --set "*.args.ROS_DISTRO=$rosdistro" \
+#     --set "*.args.BASE_IMAGE=$base_image" \
+#     --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-latest" \
+#     --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-latest" \
+#     "${targets[@]}"
+
+# # Build monolithic runtime image
+# docker build -t ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-latest \
+#     --build-arg PLATFORM="$platform" \
+#     --build-arg ROS_DISTRO="$rosdistro" \
+#     -f "$SCRIPT_DIR/monolithic/Dockerfile" "$WORKSPACE_ROOT"
+
+# Build services
+# docker compose -f "$SCRIPT_DIR/services/docker-compose.yml" build
+
+docker build -t test-main-perception \
+    --build-arg PLATFORM="$platform" \
+    --build-arg ROS_DISTRO="$rosdistro" \
+    -f "$SCRIPT_DIR/services/main-perception/Dockerfile" "$WORKSPACE_ROOT"
+
 set +x

@@ -1,0 +1,35 @@
+version: '2.17'
+#TODO: try mounting dev/shm and notice the difference
+services:
+  main-perception:
+    build:
+      context: ../../..
+      dockerfile: docker/autoware-openadk/services/main-perception/Dockerfile
+      args:
+        ROS_DISTRO: ${rosdistro}
+        PLATFORM: ${platform}
+    image: main-perception
+    network_mode: "host"
+    environment:
+      - ROS_DOMAIN_ID=${services_ros_domain_id}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: ros2 launch launch/main-perception.launch.xml map_path:=/autoware_map/nishishinjuku_autoware_map vehicle_model:=sample_vehicle use_sim_time:=${services_use_sim_time}
+
+  planning-control:
+    build:
+      context: ../../..
+      dockerfile: docker/autoware-openadk/services/planning-control/Dockerfile
+      args:
+        ROS_DISTRO: ${rosdistro}
+        PLATFORM: ${platform}
+    image: planning-control
+    network_mode: "host"
+    environment:
+      - ROS_DOMAIN_ID=${services_ros_domain_id}
+    command: ros2 launch launch/planning-control.launch.xml map_path:=/autoware_map/nishishinjuku_autoware_map vehicle_model:=sample_vehicle use_sim_time:=${services_use_sim_time}

@@ -16,27 +16,28 @@
           - cudnn_version: "{{ cudnn_version }}"
           - tensorrt_version: "{{ tensorrt_version }}"
   roles:
-    # Autoware Universe default dependencies
-    - role: autoware.dev_env.ros2
+    # Autoware Universe base dependencies
+    # - role: autoware.dev_env.ros2
+    #   when: module == 'base' or module == 'all'
     - role: autoware.dev_env.rmw_implementation
+      when: module == 'base' or module == 'all'
     - role: autoware.dev_env.gdown
+      when: module == 'base' or module == 'all'
+    - role: autoware.dev_env.ccache
+      when: (module == 'base' or module == 'all') and install_devel == 'true'
+    - role: autoware.dev_env.plotjuggler
+      when: (module == 'base' or module == 'all') and install_devel == 'true'
+    - role: autoware.dev_env.pre_commit
+      when: (module == 'base' or module == 'all') and install_devel == 'true'
+    - role: autoware.dev_env.ros2_dev_tools
+      when: (module == 'base' or module == 'all') and install_devel == 'true'
 
     # Module specific dependencies
     - role: autoware.dev_env.geographiclib
-      when: module == 'perception' or module == 'localization' or module == 'all'
+      when: module == 'main-perception' or module == 'all'
     - role: autoware.dev_env.cuda
-      when: module == 'perception' or module == 'all'
+      when: module == 'main-perception' or module == 'all'
     - role: autoware.dev_env.tensorrt
-      when: module == 'perception' or module == 'all'
+      when: module == 'main-perception' or module == 'all'
     - role: autoware.dev_env.pacmod
-      when: module == 'control' or module == 'all'
-  
-   # Devel dependencies
-    - role: autoware.dev_env.ccache
-      when: install_devel == 'true'
-    - role: autoware.dev_env.plotjuggler
-      when: install_devel == 'true'
-    - role: autoware.dev_env.pre_commit
-      when: install_devel == 'true'
-    - role: autoware.dev_env.ros2_dev_tools
-      when: install_devel == 'true'
+      when: module == 'planning-control' or module == 'main-perception' or module == 'all'
