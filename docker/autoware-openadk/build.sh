@@ -56,29 +56,24 @@ export rosdistro
 
 set -x
 # Build base images
-# docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl" \
-#     --set "*.context=$WORKSPACE_ROOT" \
-#     --set "*.ssh=default" \
-#     --set "*.platform=$platform" \
-#     --set "*.args.PLATFORM=$platform" \
-#     --set "*.args.ROS_DISTRO=$rosdistro" \
-#     --set "*.args.BASE_IMAGE=$base_image" \
-#     --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-latest" \
-#     --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-latest" \
-#     "${targets[@]}"
+docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl" \
+    --set "*.context=$WORKSPACE_ROOT" \
+    --set "*.ssh=default" \
+    --set "*.platform=$platform" \
+    --set "*.args.PLATFORM=$platform" \
+    --set "*.args.ROS_DISTRO=$rosdistro" \
+    --set "*.args.BASE_IMAGE=$base_image" \
+    --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-latest" \
+    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-latest" \
+    "${targets[@]}"
 
-# # Build monolithic runtime image
-# docker build -t ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-latest \
-#     --build-arg PLATFORM="$platform" \
-#     --build-arg ROS_DISTRO="$rosdistro" \
-#     -f "$SCRIPT_DIR/monolithic/Dockerfile" "$WORKSPACE_ROOT"
-
-# Build services
-# docker compose -f "$SCRIPT_DIR/services/docker-compose.yml" build
-
-docker build -t test-main-perception \
+# Build monolithic runtime image
+docker build -t ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-latest \
     --build-arg PLATFORM="$platform" \
     --build-arg ROS_DISTRO="$rosdistro" \
-    -f "$SCRIPT_DIR/services/main-perception/Dockerfile" "$WORKSPACE_ROOT"
+    -f "$SCRIPT_DIR/monolithic/Dockerfile" "$WORKSPACE_ROOT"
+
+# Build services
+docker compose -f "$SCRIPT_DIR/services/docker-compose.yml" build
 
 set +x

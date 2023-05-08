@@ -8,7 +8,7 @@ services:
       args:
         ROS_DISTRO: ${rosdistro}
         PLATFORM: ${platform}
-    image: main-perception
+    image: awf/openadk:runtime-main-perception
     network_mode: "host"
     environment:
       - ROS_DOMAIN_ID=${services_ros_domain_id}
@@ -28,7 +28,7 @@ services:
       args:
         ROS_DISTRO: ${rosdistro}
         PLATFORM: ${platform}
-    image: planning-control
+    image: awf/openadk:runtime-planning-control
     network_mode: "host"
     environment:
       - ROS_DOMAIN_ID=${services_ros_domain_id}
