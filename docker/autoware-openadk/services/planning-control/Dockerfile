@@ -6,7 +6,7 @@ ARG PLATFORM
 ARG ROS_DISTRO
 
 # Copy launch file
-COPY docker/autoware-openadk/services/main-perception/launch/ /launch/
+COPY docker/autoware-openadk/services/planning-control/launch/ /launch/
 
 # Copy install folder from prebuilt
 COPY --from=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-humble-latest /autoware/install/ /autoware/install/
@@ -59,5 +59,7 @@ RUN mkdir -p /etc/OpenCL/vendors \
 
 # Create entrypoint
 # hadolint ignore=DL3059
-RUN echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
-CMD ["/bin/bash"]
+COPY docker/autoware-openadk/etc/ros_entrypoint.sh /ros_entrypoint.sh
+RUN chmod +x /ros_entrypoint.sh
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["bash"]
