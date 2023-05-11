@@ -33,8 +33,6 @@ services:
     # command: /bin/bash
     # tty: true
     # stdin_open: true
-    depends_on:
-      - planning-control
 
   planning-control:
     build:
@@ -52,7 +50,7 @@ services:
       - ROS_DOMAIN_ID=${services_ros_domain_id}
       - DISPLAY=$DISPLAY
       - services_use_sim_time=${services_use_sim_time}
-    command: bash -c "sleep 15 && ros2 launch /launch/planning-control.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit use_sim_time:=${services_use_sim_time}"
+    command: ros2 launch /launch/planning-control.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit use_sim_time:=${services_use_sim_time}
     # command: /bin/bash
     # tty: true
     # stdin_open: true
