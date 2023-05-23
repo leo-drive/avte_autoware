@@ -1,4 +1,6 @@
-FROM ghcr.io/autowarefoundation/autoware-openadk:base-humble-latest as runtime
+ARG PLATFORM
+ARG ROS_DISTRO
+FROM ghcr.io/autowarefoundation/autoware-openadk:base-${ROS_DISTRO}-${PLATFORM} as base
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -9,7 +11,9 @@ ARG ROS_DISTRO
 COPY docker/autoware-openadk/services/planning-control/launch/ /launch/
 
 # Copy install folder from prebuilt
-COPY --from=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-humble-latest /autoware/install/ /autoware/install/
+FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
+FROM base as runtime
+COPY --from=prebuilt /autoware/install/ /autoware/install/
 
 # Set up runtime environment
 #TODO: rosdep for only required packages
@@ -61,5 +65,24 @@ RUN mkdir -p /etc/OpenCL/vendors \
 # hadolint ignore=DL3059
 COPY docker/autoware-openadk/etc/ros_entrypoint.sh /ros_entrypoint.sh
 RUN chmod +x /ros_entrypoint.sh
+
+RUN source /usr/share/bash-completion/completions/git
+RUN source /opt/ros/humble/setup.bash
+RUN source /autoware/install/setup.bash
+
+RUN echo "source /usr/share/bash-completion/completions/git" >> /root/.profile \
+  && echo "source /opt/ros/humble/setup.bash" >> /root/.profile \
+  && echo "source /autoware/install/setup.bash" >> /root/.profile \
+  && echo "export ROS_DOMAIN_ID=74" >> /root/.profile 
+  # && echo "export ROS_LOCALHOST_ONLY=1" >> /root/.profile
+
+RUN echo "source /usr/share/bash-completion/completions/git" >> /root/.bashrc \
+  && echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc \
+  && echo "source /autoware/install/setup.bash" >> /root/.bashrc \
+  && echo "export ROS_DOMAIN_ID=74" >> /root/.bashrc 
+  # && echo "export ROS_LOCALHOST_ONLY=1" >> /root/.bashrc
+
+ENV ROS_DOMAIN_ID=1
+
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]

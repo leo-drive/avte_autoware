@@ -1,4 +1,6 @@
-FROM ghcr.io/autowarefoundation/autoware-openadk:base-humble-latest
+ARG PLATFORM
+ARG ROS_DISTRO
+FROM ghcr.io/autowarefoundation/autoware-openadk:base-${ROS_DISTRO}-${PLATFORM} as base
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -9,7 +11,9 @@ ARG ROS_DISTRO
 COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
 
 # Copy install folder from prebuilt
-COPY --from=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-humble-latest /autoware/install/ /autoware/install/
+FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
+FROM base as runtime
+COPY --from=prebuilt /autoware/install/ /autoware/install/
 
 # Set up runtime environment
 RUN --mount=type=ssh \

@@ -54,7 +54,7 @@ xhost +
 if [ "$option_monolithic" = "true" ]; then
     docker run -it --rm --privileged --net=host --runtime nvidia -e DISPLAY=$DISPLAY \
     -e ROS_DOMAIN_ID=$services_ros_domain_id -v /tmp/.X11-unix/:/tmp/.X11-unix -v /var/tmp/autoware_map:/autoware_map \
-    ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-humble-latest /bin/bash
+    ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-$platform /bin/bash
 else
     docker compose -f services/docker-compose.yml up
 fi
