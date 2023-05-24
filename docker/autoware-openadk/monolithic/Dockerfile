@@ -12,7 +12,7 @@ COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
 
 # Copy install folder from prebuilt
 FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
-FROM base as runtime
+FROM base as monolithic
 COPY --from=prebuilt /autoware/install/ /autoware/install/
 
 # Set up runtime environment

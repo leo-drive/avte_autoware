@@ -12,7 +12,7 @@ COPY docker/autoware-openadk/services/main-perception/launch/ /launch/
 
 # Copy install folder from prebuilt
 FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
-FROM base as runtime
+FROM base as main-perception
 COPY --from=prebuilt /autoware/install/ /autoware/install/
 
 # Set up runtime environment

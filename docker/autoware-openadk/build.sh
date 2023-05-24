@@ -65,15 +65,18 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl"
     --set "*.args.BASE_IMAGE=$base_image" \
     --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-$platform" \
     --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform" \
+    --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-$platform" \
+    --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-main-perception-$rosdistro-$platform" \
+    --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-planning-control-$rosdistro-$platform" \
     "${targets[@]}"
 
-# Build monolithic runtime image
-docker build --rm --platform $platform -t ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-$platform \
-    --build-arg PLATFORM="$platform" \
-    --build-arg ROS_DISTRO="$rosdistro" \
-    -f "$SCRIPT_DIR/monolithic/Dockerfile" "$WORKSPACE_ROOT"
+# # Build monolithic runtime image
+# docker build --rm --platform $platform -t ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-$platform \
+#     --build-arg PLATFORM="$platform" \
+#     --build-arg ROS_DISTRO="$rosdistro" \
+#     -f "$SCRIPT_DIR/monolithic/Dockerfile" "$WORKSPACE_ROOT"
 
-# Build services
+# # Build services
 # docker compose -f "$SCRIPT_DIR/services/docker-compose.yml" build --force-rm
 
 set +x
