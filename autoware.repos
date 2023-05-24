@@ -99,4 +99,15 @@ repositories:
     type: git
     url: https://github.com/autowarefoundation/sample_vehicle_launch.git
     version: 157238ca77de7b0a59f71a0b28f456741fab3ca2
+  # sensor_kit
+  sensor_kit/golf_sensor_kit_launch:
+    type: git
+    url: https://github.com/leo-drive/golf_sensor_kit_launch.git
+    version: 7ec8a8fa26327f0c8c0011f04a604a482ceb3d95
+  # vehicle
+  vehicle/golf_vehicle_launch:
+    type: git
+    url: https://github.com/leo-drive/golf_vehicle_launch.git
+    version: 4e90501546bd62274c79e6be425bce483dfb6c7d
+
 
