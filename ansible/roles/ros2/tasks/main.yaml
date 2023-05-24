@@ -5,6 +5,7 @@
       - curl
       - gnupg
       - lsb-release
+      - python3-pip
     update_cache: true
 
 # sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
@@ -37,7 +38,9 @@
 - name: Install ros-{{ rosdistro + '-' + installation_type }}
   become: true
   ansible.builtin.apt:
-    name: ros-{{ rosdistro }}-{{ installation_type }}
+    name: 
+      - ros-{{ rosdistro }}-{{ installation_type }}
+      - ros-dev-tools
     state: latest
     update_cache: true
 
@@ -48,3 +51,9 @@
     state: present
     create: true
     mode: 0644
+
+- name: Run 'sudo rosdep init'
+  become: true
+  ansible.builtin.command:
+    cmd: rosdep init
+    creates: /etc/ros/rosdep/sources.list.d/20-default.list

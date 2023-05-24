@@ -3,7 +3,7 @@
 set -e
 
 SCRIPT_DIR=$(readlink -f "$(dirname "$0")")
-WORKSPACE_ROOT="$SCRIPT_DIR/../"
+WORKSPACE_ROOT="$SCRIPT_DIR/../../"
 
 # Parse arguments
 args=()
@@ -26,6 +26,22 @@ while [ "$1" != "" ]; do
     shift
 done
 
+# Set platform
+if [ -n "$option_platform" ]; then
+    platform="$option_platform"
+else
+    platform="linux/amd64"
+    if [ "$(uname -m)" = "aarch64" ]; then
+        platform="linux/arm64"
+    fi
+fi
+
+# Load platform specific dependencies
+source "$WORKSPACE_ROOT/amd64.env"
+if [ "$platform" = "linux/arm64" ]; then
+    source "$WORKSPACE_ROOT/arm64.env"
+fi
+
 # Set CUDA options
 if [ "$option_no_cuda" = "true" ]; then
     setup_args="--no-nvidia"
@@ -41,22 +57,6 @@ if [ "$option_no_prebuilt" = "true" ]; then
 else
     # default targets include devel and prebuilt
     targets=()
-fi
-
-# Set platform
-if [ -n "$option_platform" ]; then
-    platform="$option_platform"
-else
-    platform="linux/amd64"
-    if [ "$(uname -m)" = "aarch64" ]; then
-        platform="linux/arm64"
-    fi
-fi
-
-# Load env
-source "$WORKSPACE_ROOT/amd64.env"
-if [ "$platform" = "linux/arm64" ]; then
-    source "$WORKSPACE_ROOT/arm64.env"
 fi
 
 # https://github.com/docker/buildx/issues/484

@@ -1,42 +1,86 @@
-# Autoware - the world's leading open-source software project for autonomous driving
+# Autoware Open AD Kit
 
-![Autoware_RViz](https://user-images.githubusercontent.com/63835446/158918717-58d6deaf-93fb-47f9-891d-e242b02cba7b.png)
-[![Discord](https://img.shields.io/discord/953808765935816715?label=Autoware%20Discord&style=for-the-badge)](https://discord.gg/Q94UsPvReQ)
+The [Open AD Kit](https://www.autoware.org/autoware-open-ad-kit) is a collaborative project developed by the [Autoware Foundation](https://www.autoware.org/) and its member companies and alliance partners. It aims to bring software-defined best practices to the [Autoware project](https://autowarefoundation.github.io/autoware-documentation/main/) and to enhance the [Autoware ecosystem](https://www.autoware.org/autoware-members) and capabilities by partnering with other organizations that share the goal of creating software-defined vehicles.
 
-Autoware is an open-source software stack for self-driving vehicles, built on the [Robot Operating System (ROS)](https://www.ros.org/). It includes all of the necessary functions to drive an autonomous vehicles from localization and object detection to route planning and control, and was created with the aim of enabling as many individuals and organizations as possible to contribute to open innovations in autonomous driving technology.
+The Open AD Kit utilizes Autoware components, which are built using the [ROS2 framework](https://docs.ros.org/en/humble/index.html) and the SOAFEE reference implementation [EWAOL](https://gitlab.com/soafee/ewaol/meta-ewaol), to create a practical application demonstrating how [SOAFEE](https://www.soafee.io/)'s vision of software-defined vehicles can be realized. ROS2, with its nodes architecture, provides the foundation for having distinct functional containerized runtime modules. Open AD Kit application can also communicate with other containerized applications to support various functionalities, such as providing a bi-directional data pipeline and providing up-to-date maps to be consumed within the Open AD Kit application.
 
-![Autoware architecture](https://static.wixstatic.com/media/984e93_552e338be28543c7949717053cc3f11f~mv2.png/v1/crop/x_0,y_1,w_1500,h_879/fill/w_863,h_506,al_c,usm_0.66_1.00_0.01,enc_auto/Autoware-GFX_edited.png)
+Open AD kit solution built upon the [AVA Developer Platform](https://www.adlinktech.com/Products/Computer_on_Modules/COM-HPC-Server-Carrier-and-Starter-Kit/AVA_Developer_Platform) from ADLINK, which is a high-performance, high-density, and high-reliability ARM Neoverse N1-based server carrier board. Both AVA Developer Platform and EWAOL lays the foundation for the Open AD Kit to be deployed as a lightweight and scalable software-defined vehicle platform.
 
-## Documentation
+Open AD Kit is also capable of getting OTA updates by using [eSync Alliance's](https://www.esyncalliance.org/) technology. eSync is a secure, scalable, and reliable OTA update solution that can be used to update the Open AD Kit application and its dependencies. eSync is also capable of updating the Open AD Kit application and its dependencies on the fly, which means that the Open AD Kit application can be updated without having to restart the vehicle.
 
-To learn more about using or developing Autoware, refer to the [Autoware documentation site](https://autowarefoundation.github.io/autoware-documentation/main/). You can find the source for the documentation in [autowarefoundation/autoware-documentation](https://github.com/autowarefoundation/autoware-documentation).
+## Open AD Kit Architecture
+![AD Kit Architecture](https://user-images.githubusercontent.com/21222428/231436248-f745830d-a74f-42e0-8afe-fd58f6dbc8fc.jpg)
 
-## Repository overview
+## Using Open AD Kit
 
-- [autowarefoundation/autoware](https://github.com/autowarefoundation/autoware)
-  - Meta-repository containing `.repos` files to construct an Autoware workspace.
-  - It is anticipated that this repository will be frequently forked by users, and so it contains minimal information to avoid unnecessary differences.
-- [autowarefoundation/autoware_common](https://github.com/autowarefoundation/autoware_common)
-  - Library/utility type repository containing commonly referenced ROS packages.
-  - These packages were moved to a separate repository in order to reduce CI execution time
-- [autowarefoundation/autoware.core](https://github.com/autowarefoundation/autoware.core)
-  - Main repository for high-quality, stable ROS packages for Autonomous Driving.
-  - Based on [Autoware.Auto](https://gitlab.com/autowarefoundation/autoware.auto/AutowareAuto) and [Autoware.Universe](https://github.com/autowarefoundation/autoware.universe).
-- [autowarefoundation/autoware.universe](https://github.com/autowarefoundation/autoware.universe)
-  - Repository for experimental, cutting-edge ROS packages for Autonomous Driving.
-  - Autoware Universe was created to make it easier for researchers and developers to extend the functionality of Autoware Core
-- [autowarefoundation/autoware_launch](https://github.com/autowarefoundation/autoware_launch)
-  - Launch configuration repository containing node configurations and their parameters.
-- [autowarefoundation/autoware-github-actions](https://github.com/autowarefoundation/autoware-github-actions)
-  - Contains [reusable GitHub Actions workflows](https://docs.github.com/ja/actions/learn-github-actions/reusing-workflows) used by multiple repositories for CI.
-  - Utilizes the [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) concept.
-- [autowarefoundation/autoware-documentation](https://github.com/autowarefoundation/autoware-documentation)
-  - Documentation repository for Autoware users and developers.
-  - Since Autoware Core/Universe has multiple repositories, a central documentation repository is important to make information accessible from a single place.
+### Hardware Prerequisites
 
-## Using Autoware.AI
+Open AD Kit as a software-defined vehicle platform is built upon the [AVA Developer Platform](https://www.adlinktech.com/Products/Computer_on_Modules/COM-HPC-Server-Carrier-and-Starter-Kit/AVA_Developer_Platform) from ADLINK, but for demonstration purposes it can be deployed on NVIDIA GPU enabled x86_64 and ARM64 platforms. The following table shows the minimum hardware requirements for Open AD Kit.
 
-If you wish to use Autoware.AI, the previous version of Autoware based on ROS 1, switch to [autoware-ai](https://github.com/autowarefoundation/autoware.ai/tree/autoware-ai) branch. However, be aware that Autoware.AI will reach the end-of-life by the end of 2022, and we strongly recommend transitioning to Autoware Core/Universe for future use.
+| Hardware | Minimum Requirements |
+| --- | --- | 
+| CPU | 8 cores, 2.0 GHz |
+| Memory | 16 GB |
+| Storage | 128 GB |
+| GPU | NVIDIA GPU with CUDA support |
+
+### Software Prerequisites
+
+Open AD Kit built upon [EWAOL](https://gitlab.com/soafee/ewaol/meta-ewaol) which provides all the necessary software dependencies. But it can be deployed on a platform which meets the hardware prerequisites. The following table shows the minimum software requirements for Open AD Kit.
+
+| Software | Minimum Requirements |
+| --- | --- |
+| OS | Ubuntu 20.04 |
+| NVIDIA Linux drivers | 418.81.07 |
+| NVIDIA Container Toolkit | 1.3.0 |
+| Docker | 19.03.13 |
+| Docker Compose | 1.27.4 |
+
+Detailed instructions on how to install the software prerequisites can be found in the [Open AD Kit Prerequisites Installation Guide](https://github.com/leo-drive/avte_autoware/blob/main/docker/autoware-openadk/docs/installation.md).
+
+### Build
+
+To build the Open AD Kit application, run the following command:
+
+```bash
+cd docker/autoware-openadk
+./build.sh # can give --module <module_name> to build a specific module, by default monolithic build is performed
+```
+
+### Run
+
+To run the Open AD Kit monolithic docker image:
+
+```bash
+cd docker/autoware-openadk
+./run.sh
+```
+
+### Test
+
+To test the Open AD Kit monolithic image using pre-installed simulation data, once you enter the docker container:
+
+- Run the following command for the planning simulation:
+
+  ```bash
+  awf-launch-sample-planning-sim
+  ```
+
+- For the rosbag replay simulation, run the following command:
+
+  ```bash
+  awf-launch-sample-replay-sim
+  ```
+
+  - And to replay the sample rosbag from another terminal:
+
+    ```bash
+    awf-replay-sample-rosbag
+    ```
+
+## Further Documentation
+
+To learn more technical details about Autoware,SOAFEE refer to the [Autoware documentation site](https://autowarefoundation.github.io/autoware-documentation/main/), [SOAFEE documentation site](https://gitlab.com/soafee/blueprints).
 
 ## Contributing
 
@@ -46,6 +90,7 @@ If you wish to use Autoware.AI, the previous version of Autoware based on ROS 1,
 - If you have any technical questions, you can start a discussion in the [Q&A category](https://github.com/autowarefoundation/autoware/discussions/categories/q-a) to request help and confirm if a potential issue is a bug or not.
 
 ## Useful resources
-
+- [AVA Developer Platform](https://www.adlinktech.com/Products/Computer_on_Modules/COM-HPC-Server-Carrier-and-Starter-Kit/AVA_Developer_Platform)
+- [ARM Software Defined Vehicle](https://www.arm.com/blogs/blueprint/software-defined-vehicle)
 - [Autoware Foundation homepage](https://www.autoware.org/)
 - [Support guidelines](https://autowarefoundation.github.io/autoware-documentation/main/support/support-guidelines/)
