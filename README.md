@@ -11,6 +11,9 @@ Open AD Kit is also capable of getting OTA updates by using [eSync Alliance's](h
 ## Open AD Kit Architecture
 ![AD Kit Architecture](https://user-images.githubusercontent.com/21222428/231436248-f745830d-a74f-42e0-8afe-fd58f6dbc8fc.jpg)
 
+![roscubex_demo_exp](https://github.com/leo-drive/avte_autoware/assets/15357471/39ce521b-cc63-4645-9b41-01a79c50a2bf)
+
+
 ## Using Open AD Kit
 
 ### Hardware Prerequisites
