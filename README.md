@@ -81,6 +81,24 @@ To test the Open AD Kit monolithic image using pre-installed simulation data, on
     awf-replay-sample-rosbag
     ```
 
+### Demo
+
+#### Planning Demo - Before OTA Update
+
+[![OpenAD Kit Planning Demo - Before OTA](https://img.youtube.com/vi/Xo_ImgxFTZc/0.jpg)](https://www.youtube.com/watch?v=Xo_ImgxFTZc)
+
+#### Planning Demo - After OTA Update
+
+[![OpenAD Kit Planning Demo - After OTA](https://img.youtube.com/vi/Fhj-mV8WpAQ/0.jpg)](https://www.youtube.com/watch?v=Fhj-mV8WpAQ)
+
+#### Perception Demo - Before OTA Update
+
+[![OpenAD Kit Perception Demo - Before OTA](https://img.youtube.com/vi/I7pXttPDtqQ/0.jpg)](https://www.youtube.com/watch?v=I7pXttPDtqQ)
+
+#### Perception Demo - After OTA Update
+
+[![OpenAD Kit Perception Demo - After OTA](https://img.youtube.com/vi/V5AnXL-JGAk/0.jpg)](https://www.youtube.com/watch?v=V5AnXL-JGAk)
+
 ## Further Documentation
 
 To learn more technical details about Autoware,SOAFEE refer to the [Autoware documentation site](https://autowarefoundation.github.io/autoware-documentation/main/), [SOAFEE documentation site](https://gitlab.com/soafee/blueprints).
