@@ -99,6 +99,10 @@ To test the Open AD Kit monolithic image using pre-installed simulation data, on
 
 [![OpenAD Kit Perception Demo - After OTA](https://img.youtube.com/vi/V5AnXL-JGAk/0.jpg)](https://www.youtube.com/watch?v=V5AnXL-JGAk)
 
+#### OTA Update UI
+
+[![OTA Update UI](https://img.youtube.com/vi/LfrokyLRQoc/0.jpg)](https://www.youtube.com/watch?v=LfrokyLRQoc)
+
 ## Further Documentation
 
 To learn more technical details about Autoware,SOAFEE refer to the [Autoware documentation site](https://autowarefoundation.github.io/autoware-documentation/main/), [SOAFEE documentation site](https://gitlab.com/soafee/blueprints).
