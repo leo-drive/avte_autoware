@@ -22,7 +22,7 @@ repositories:
   launcher/autoware_launch:
     type: git
     url: https://github.com/leo-drive/avte.autoware_launch.git
-    version: 52985d488d573006036bf7ab7b5189df21c720fe
+    version: perception-demo-after
   middleware/external/heaphook:
     type: git
     url: https://github.com/tier4/heaphook.git
