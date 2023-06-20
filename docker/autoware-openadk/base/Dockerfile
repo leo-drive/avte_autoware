@@ -15,7 +15,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-ins
   && rm -rf /var/lib/apt/lists/*
 
 # Copy files
-COPY autoware.repos setup-dev-env.sh ansible-galaxy-requirements.yaml amd64.env arm64.env /autoware/
+COPY setup-dev-env.sh ansible-galaxy-requirements.yaml amd64.env arm64.env /autoware/
 COPY ansible/ /autoware/ansible/
 WORKDIR /autoware
 RUN ls /autoware
@@ -39,7 +39,7 @@ RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/bash.bashrc
 CMD ["/bin/bash"]
 
 # hadolint ignore=DL3006
-FROM base as prebuilt
+FROM base as devel
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG ROS_DISTRO
@@ -47,9 +47,24 @@ ARG ROS_DISTRO
 # Set up development environment
 RUN --mount=type=ssh \
   ./setup-dev-env.sh -y --module all openadk \
-  && pip uninstall -y ansible ansible-core \
-  && mkdir src \
+  && pip uninstall -y ansible ansible-core
+
+# Create entrypoint
+# hadolint ignore=DL3059
+CMD ["/bin/bash"]
+
+# hadolint ignore=DL3006
+FROM devel as prebuilt
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ARG ROS_DISTRO
+
+COPY autoware.repos simulator.repos /autoware/
+
+RUN --mount=type=ssh \
+  mkdir src \
   && vcs import src < autoware.repos \
+  && vcs import src < simulator.repos \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \
   && apt-get clean \
@@ -63,6 +78,9 @@ RUN --mount=type=ssh \
 RUN source /opt/ros/"$ROS_DISTRO"/setup.bash \
   && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release \
   && find /autoware/install -type d -exec chmod 777 {} \;
+
+RUN chmod -R 777 /autoware/install/
+RUN echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
 
 # Create entrypoint
 # hadolint ignore=DL3059

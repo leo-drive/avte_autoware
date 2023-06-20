@@ -9,6 +9,7 @@ ARG ROS_DISTRO
 
 # Copy bash aliases
 COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
+COPY autoware.repos /autoware/
 
 # Copy install folder from prebuilt
 FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
