@@ -46,7 +46,7 @@ services:
     image: ghcr.io/autowarefoundation/autoware-openadk:runtime-planning-control-${rosdistro}-${platform}
     volumes:
       - /var/tmp/autoware_map:/autoware_map
-        - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: "host"
     environment:
       - ROS_DOMAIN_ID=${services_ros_domain_id}

@@ -72,15 +72,6 @@ RUN source /autoware/install/setup.bash
 
 RUN echo "source /usr/share/bash-completion/completions/git" >> /root/.profile \
   && echo "source /opt/ros/humble/setup.bash" >> /root/.profile \
-  && echo "source /autoware/install/setup.bash" >> /root/.profile \
-  && echo "export ROS_DOMAIN_ID=74" >> /root/.profile
-  # && echo "export ROS_LOCALHOST_ONLY=1" >> /root/.bashrc
-
-RUN echo "source /usr/share/bash-completion/completions/git" >> /root/.bashrc \
-  && echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc \
-  && echo "source /autoware/install/setup.bash" >> /root/.bashrc \
-  && echo "export ROS_DOMAIN_ID=74" >> /root/.bashrc 
-  # && echo "export ROS_LOCALHOST_ONLY=1" >> /root/.bashrc
-
+  && echo "source /autoware/install/setup.bash" >> /root/.profile
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
