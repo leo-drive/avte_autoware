@@ -1,6 +1,10 @@
+// group "default" {
+//   targets = ["base", "devel", "prebuilt", "monolithic", "main-perception", "planning-control"]
+// }
 group "default" {
-  targets = ["base", "devel", "prebuilt", "monolithic", "main-perception", "planning-control"]
+  targets = ["base", "devel"]
 }
+
 
 // For docker/metadata-action
 target "docker-metadata-action-base" {}

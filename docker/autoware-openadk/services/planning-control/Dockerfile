@@ -15,13 +15,16 @@ FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFO
 FROM base as planning-control
 COPY --from=prebuilt /autoware/install/ /autoware/install/
 
+# Copy Ansible playbooks
+COPY ansible/playbooks/planning-control.yaml /autoware/ansible/playbooks/planning-control.yaml
+
 ARG PLATFORM
 ARG ROS_DISTRO
 
 # Set up runtime environment
 #TODO: rosdep for only required packages
 RUN --mount=type=ssh \
-  ./setup-dev-env.sh -y --module planning-control --runtime openadk \
+  ./setup-dev-env.sh -y --runtime planning-control \
   && pip uninstall -y ansible ansible-core \
   && mkdir src \
   && vcs import src < autoware.repos \

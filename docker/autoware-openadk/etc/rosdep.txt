@@ -1,0 +1,64 @@
+#[apt] Installation commands:
+  apt-get install -y libeigen3-dev
+  apt-get install -y libboost-dev
+  apt-get install -y nlohmann-json3-dev
+  apt-get install -y libboost-all-dev
+  apt-get install -y libfmt-dev
+  apt-get install -y libboost-filesystem-dev
+  apt-get install -y libboost-regex-dev
+  apt-get install -y libboost-serialization-dev
+  apt-get install -y libboost-thread-dev
+  apt-get install -y libnl-3-dev
+  apt-get install -y libnl-genl-3-dev
+  apt-get install -y libnl-route-3-dev
+  apt-get install -y chrony
+  apt-get install -y sysstat
+  apt-get install -y libqt5core5a
+  apt-get install -y libqt5gui5
+  apt-get install -y libqt5widgets5
+  apt-get install -y qtbase5-dev
+  apt-get install -y libpcl-common1.12
+  apt-get install -y libgeographic-dev
+  apt-get install -y libopencv-dev
+  apt-get install -y libpcl-dev
+  apt-get install -y libpugixml-dev
+  apt-get install -y librange-v3-dev
+  apt-get install -y pkg-config
+  apt-get install -y libgoogle-glog-dev
+  apt-get install -y libpcap0.8-dev
+  apt-get install -y ros-humble-sophus
+  apt-get install -y libyaml-cpp-dev
+  apt-get install -y python3-flask
+  apt-get install -y ros-humble-magic-enum
+  apt-get install -y python3-bson
+  apt-get install -y python3-tornado
+  apt-get install -y libomp-dev
+  apt-get install -y libopenblas-dev
+  apt-get install -y wget
+  apt-get install -y python3-numpy
+#[pip] Installation commands:
+  pip3 install -U -I xmlschema
+#[apt] Installation commands:
+  apt-get install -y python3-yaml
+  apt-get install -y python3-pytest
+  apt-get install -y bluez
+  apt-get install -y libgtest-dev
+  apt-get install -y libprotobuf-dev
+  apt-get install -y protobuf-compiler
+  apt-get install -y libprotoc-dev
+  apt-get install -y libprotobuf23
+  apt-get install -y python3-rtree
+  apt-get install -y libembree-dev
+  apt-get install -y libcgal-dev
+#[pip] Installation commands:
+  pip3 install -U -I yamale
+#[apt] Installation commands:
+  apt-get install -y python3-open3d
+  apt-get install -y python3-flask-cors
+  apt-get install -y libboost-system-dev
+  apt-get install -y ros-humble-osrf-testing-tools-cpp
+  apt-get install -y python3-matplotlib
+  apt-get install -y python3-pandas
+  apt-get install -y python3-scipy
+  apt-get install -y libcrypto++-dev
+  apt-get install -y libcpprest-dev
