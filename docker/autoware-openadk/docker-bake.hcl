@@ -2,7 +2,7 @@
 //   targets = ["base", "devel", "prebuilt", "monolithic", "main-perception", "planning-control"]
 // }
 group "default" {
-  targets = ["base", "devel"]
+  targets = ["base", "devel", "prebuilt", "monolithic"]
 }
 
 

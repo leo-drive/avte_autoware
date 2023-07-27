@@ -129,20 +129,31 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG PLATFORM
 ARG ROS_DISTRO
 
-# Set up runtime environment
-COPY ansible/playbooks/perception-localization.yaml /autoware/ansible/playbooks/perception-localization.yaml
-COPY ansible/playbooks/planning-control.yaml /autoware/ansible/playbooks/planning-control.yaml
+# Set up planning-control
+COPY ansible/playbooks/planning_control.yaml /autoware/ansible/playbooks/planning_control.yaml
+COPY ansible/roles/planning_control /autoware/ansible/roles/planning_control
 RUN --mount=type=ssh \
-  ./setup-dev-env.sh -y --no-cuda-drivers --runtime perception-localization \
-  && ./setup-dev-env.sh -y --runtime planning-control \
-  && pip uninstall -y ansible ansible-core \
+  ./setup-dev-env.sh -y --runtime planning_control \
   && apt-get clean \
   && find /usr/lib/$PLATFORM-linux-gnu -name "*.a" -type f -delete \
   && find / -name "*.o" -type f -delete \
   && find / -name "*.h" -type f -delete \
   && find / -name "*.hpp" -type f -delete \
   && rm -rf /var/lib/apt/lists/* \
-  /autoware/ansible 
+  "$HOME"/.cache
+
+# Set up perception-localization
+COPY ansible/playbooks/perception_localization.yaml /autoware/ansible/playbooks/perception_localization.yaml
+COPY ansible/roles/perception_localization /autoware/ansible/roles/perception_localization
+RUN --mount=type=ssh \
+  ./setup-dev-env.sh -y --runtime perception_localization \
+  && apt-get clean \
+  && find /usr/lib/$PLATFORM-linux-gnu -name "*.a" -type f -delete \
+  && find / -name "*.o" -type f -delete \
+  && find / -name "*.h" -type f -delete \
+  && find / -name "*.hpp" -type f -delete \
+  && rm -rf /var/lib/apt/lists/* \
+  "$HOME"/.cache
 
 # Install rosdep dependencies
 COPY docker/autoware-openadk/etc/install_rosdep.py /autoware/install_rosdep.py
