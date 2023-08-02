@@ -50,3 +50,66 @@
     - libnvparsers-dev
     - libnvonnxparsers-dev
   when: install_devel | bool
+
+- name: Software properties common - RViz2 black screen fix
+  become: true
+  ansible.builtin.apt:
+    name:
+    - software-properties-common
+    update_cache: true
+
+- name: Add kisak-mesa repository - RViz2 black screen fix
+  become: true
+  ansible.builtin.apt_repository:
+    repo: ppa:kisak/kisak-mesa
+    state: present
+
+- name: Install mesa libraries - RViz2 black screen fix
+  become: true
+  ansible.builtin.apt:
+    name:
+    - libegl-mesa0
+    - libegl1-mesa-dev
+    - libgbm-dev
+    - libgbm1
+    - libgl1-mesa-dev
+    - libgl1-mesa-dri
+    - libglapi-mesa
+    - libglx-mesa0
+    update_cache: true
+  
+- name: Ensure directory exists - Vulkan
+  file:
+    path: /etc/vulkan/icd.d
+    state: directory
+    mode: '0755'
+
+- name: Register Vulkan GPU Vendor
+  get_url:
+    url: https://gitlab.com/nvidia/container-images/vulkan/raw/dc389b0445c788901fda1d85be96fd1cb9410164/nvidia_icd.json
+    dest: /etc/vulkan/icd.d/nvidia_icd.json
+    mode: '0644'
+
+- name: Ensure directory exists- OpenGL
+  file:
+    path: /etc/glvnd/egl_vendor.d
+    state: directory
+    mode: '0755'
+
+- name: Register OpenGL GPU Vendor
+  get_url:
+    url: https://gitlab.com/nvidia/container-images/opengl/raw/5191cf205d3e4bb1150091f9464499b076104354/glvnd/runtime/10_nvidia.json
+    dest: /etc/glvnd/egl_vendor.d/10_nvidia.json
+    mode: '0644'
+  
+- name: Ensure OpenCL vendors directory exists
+  file:
+    path: /etc/OpenCL/vendors
+    state: directory
+    mode: '0755'
+
+- name: Create /etc/OpenCL/vendors/nvidia.icd
+  copy: 
+    content: "libnvidia-opencl.so.1"
+    dest: /etc/OpenCL/vendors/nvidia.icd
+    mode: '0644'

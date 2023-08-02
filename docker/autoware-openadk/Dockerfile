@@ -112,9 +112,6 @@ RUN --mount=type=ssh source /opt/ros/"$ROS_DISTRO"/setup.bash \
   && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release \
   && find /autoware/install -type d -exec chmod 777 {} \;
 
-# Extract rosdep dependencies
-RUN DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --simulate --reinstall --rosdistro "$ROS_DISTRO" > /autoware/install/rosdep.txt
-
 RUN chmod -R 777 /autoware/install/
 RUN echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
 
@@ -146,7 +143,7 @@ RUN --mount=type=ssh \
 COPY ansible/playbooks/perception_localization.yaml /autoware/ansible/playbooks/perception_localization.yaml
 COPY ansible/roles/perception_localization /autoware/ansible/roles/perception_localization
 RUN --mount=type=ssh \
-  ./setup-dev-env.sh -y --runtime perception_localization \
+  ./setup-dev-env.sh -y --runtime --no-cuda-drivers perception_localization \
   && apt-get clean \
   && find /usr/lib/$PLATFORM-linux-gnu -name "*.a" -type f -delete \
   && find / -name "*.o" -type f -delete \
@@ -156,10 +153,14 @@ RUN --mount=type=ssh \
   "$HOME"/.cache
 
 # Install rosdep dependencies
-COPY docker/autoware-openadk/etc/install_rosdep.py /autoware/install_rosdep.py
+COPY autoware.repos /autoware/
 COPY --from=prebuilt /autoware/install/ /autoware/install/
 RUN --mount=type=ssh \
-  python3 /autoware/install_rosdep.py /autoware/install/rosdep.txt \
+  mkdir src \
+  && vcs import src < autoware.repos \
+  && apt-get update \
+  && rosdep update \
+  && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \
   && apt-get clean \
   && find /usr/lib/$PLATFORM-linux-gnu -name "*.a" -type f -delete \
   && find / -name "*.o" -type f -delete \
@@ -177,21 +178,6 @@ RUN --mount=type=ssh \
   /usr/lib/gcc \
   /usr/lib/jvm \
   /usr/lib/llvm*
-
-# Bugfix rviz2 black-screen problem with some nvidia drivers: https://github.com/ros2/rviz/issues/948
-RUN apt update && apt install -y software-properties-common && add-apt-repository ppa:kisak/kisak-mesa && apt install -y \
-  libegl-mesa0 libegl1-mesa-dev libgbm-dev libgbm1 libgl1-mesa-dev libgl1-mesa-dri libglapi-mesa libglx-mesa0
-
-# Register Vulkan and OpenGL GPU vendors
-RUN curl https://gitlab.com/nvidia/container-images/vulkan/raw/dc389b0445c788901fda1d85be96fd1cb9410164/nvidia_icd.json -o /etc/vulkan/icd.d/nvidia_icd.json \
-  && chmod 644 /etc/vulkan/icd.d/nvidia_icd.json
-RUN curl https://gitlab.com/nvidia/container-images/opengl/raw/5191cf205d3e4bb1150091f9464499b076104354/glvnd/runtime/10_nvidia.json -o /etc/glvnd/egl_vendor.d/10_nvidia.json \
-  && chmod 644 /etc/glvnd/egl_vendor.d/10_nvidia.json
-
-# Register OpenCL GPU vendors
-RUN mkdir -p /etc/OpenCL/vendors \
-  && echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd \
-  && chmod 644 /etc/OpenCL/vendors/nvidia.icd
 
 # Copy bash aliases
 COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases

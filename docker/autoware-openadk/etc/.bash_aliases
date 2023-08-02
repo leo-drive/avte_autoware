@@ -1,3 +1,3 @@
-alias awf-launch-sample-planning-sim='ros2 launch scenario_test_runner scenario_test_runner.launch.py architecture_type:=awf/universe record:=false scenario:=/scenario/yield_maneuver_demo.yaml sensor_model:=sample_sensor_kit vehicle_model:=sample_vehicle map_path:=/autoware/simulation/perception/map/'
+alias awf-launch-sample-planning-sim='ros2 launch autoware_launch planning_simulator.launch.xml map_path:=/autoware_map/sample-map-planning vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
 
 alias awf-launch-sample-replay-sim='ros2 launch autoware_launch logging_simulator.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
