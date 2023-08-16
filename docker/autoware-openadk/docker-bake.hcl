@@ -2,12 +2,13 @@
 //   targets = ["base", "devel", "prebuilt", "monolithic", "main-perception", "planning-control"]
 // }
 group "default" {
-  targets = ["base", "devel", "prebuilt", "monolithic"]
+  targets = ["base", "pre-devel", "devel", "prebuilt", "monolithic"]
 }
 
 
 // For docker/metadata-action
 target "docker-metadata-action-base" {}
+target "docker-metadata-action-pre-devel" {}
 target "docker-metadata-action-devel" {}
 target "docker-metadata-action-prebuilt" {}
 target "docker-metadata-action-monolithic" {}
@@ -18,6 +19,12 @@ target "base" {
   inherits = ["docker-metadata-action-base"]
   dockerfile = "docker/autoware-openadk/Dockerfile"
   target = "base"
+}
+
+target "pre-devel" {
+  inherits = ["docker-metadata-action-pre-devel"]
+  dockerfile = "docker/autoware-openadk/Dockerfile"
+  target = "pre-devel"
 }
 
 target "devel" {

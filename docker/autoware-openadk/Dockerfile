@@ -12,6 +12,7 @@ ARG ROS_DISTRO
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
   git \
   ssh \
+  python3.10-venv \
   && mkdir -p /autoware/ansible/playbooks \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
@@ -167,6 +168,7 @@ RUN --mount=type=ssh \
   && find / -name "*.h" -type f -delete \
   && find / -name "*.hpp" -type f -delete \
   && rm -rf /var/lib/apt/lists/* \
+  /autoware/src \
   /root/.local/pipx \
   /opt/ros/humble/include \
   /etc/apt/sources.list.d/cuda*.list \
@@ -181,6 +183,25 @@ RUN --mount=type=ssh \
 
 # Copy bash aliases
 COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
+
+# # DEBUG - Copy launch files of modules
+# COPY docker/autoware-openadk/services/main-perception/launch/ /launch/
+# COPY docker/autoware-openadk/services/planning-control/launch/ /launch/
+
+# # DEBUG - Create entrypoint as ros2 not found in PATHS
+# COPY docker/autoware-openadk/etc/ros_entrypoint.sh /ros_entrypoint.sh
+# RUN chmod +x /ros_entrypoint.sh
+
+# RUN source /usr/share/bash-completion/completions/git
+# RUN source /opt/ros/humble/setup.bash
+# RUN source /autoware/install/setup.bash
+
+# RUN echo "source /usr/share/bash-completion/completions/git" >> /root/.profile \
+#   && echo "source /opt/ros/humble/setup.bash" >> /root/.profile \
+#   && echo "source /autoware/install/setup.bash" >> /root/.profile
+
+# ENTRYPOINT ["/ros_entrypoint.sh"]
+# CMD ["bash"]
 
 # Create entrypoint
 # hadolint ignore=DL3059

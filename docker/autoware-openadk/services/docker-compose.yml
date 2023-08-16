@@ -8,15 +8,15 @@ services:
       args:
         ROS_DISTRO: ${rosdistro}
         PLATFORM: ${platform}
-    image: ghcr.io/autowarefoundation/autoware-openadk:runtime-main-perception-${rosdistro}-${platform}
+    image: ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-humble-x86_64
     volumes:
       - /var/tmp/autoware_map:/autoware_map
       - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: "host"
     environment:
-      - ROS_DOMAIN_ID=${services_ros_domain_id}
+      # - ROS_DOMAIN_ID=${services_ros_domain_id}
       - DISPLAY=$DISPLAY
-      - services_use_sim_time=${services_use_sim_time}
+      # - services_use_sim_time=${services_use_sim_time}
     deploy:
       resources:
         reservations:
@@ -30,31 +30,31 @@ services:
     #   interval: 10s
     #   timeout: 5s
     #   retries: 3
-    command: /bin/bash
-    # command: ros2 launch /launch/main-perception.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit use_sim_time:=${services_use_sim_time}
-    tty: true
-    stdin_open: true
+    # command: /bin/bash
+    command: ros2 launch /launch/main-perception.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit
+    # tty: true
+    # stdin_open: true
 
   planning-control:
-    build:
-      context: ../../..
-      dockerfile: docker/autoware-openadk/services/planning-control/Dockerfile
-      args:
-        ROS_DISTRO: ${rosdistro}
-        PLATFORM: ${platform}
+    # build:
+    #   context: ../../..
+    #   dockerfile: docker/autoware-openadk/services/planning-control/Dockerfile
+    #   args:
+    #     ROS_DISTRO: ${rosdistro}
+    #     PLATFORM: ${platform}
     # image: awf/openadk:runtime-planning-control
-    image: ghcr.io/autowarefoundation/autoware-openadk:runtime-planning-control-${rosdistro}-${platform}
+    image: ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-humble-x86_64
     volumes:
       - /var/tmp/autoware_map:/autoware_map
       - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: "host"
     environment:
-      - ROS_DOMAIN_ID=${services_ros_domain_id}
+      # - ROS_DOMAIN_ID=${services_ros_domain_id}
       - DISPLAY=$DISPLAY
-      - services_use_sim_time=${services_use_sim_time}
-    # command: ros2 launch /launch/planning-control.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit use_sim_time:=${services_use_sim_time}
-    command: /bin/bash
-    tty: true
-    stdin_open: true
+      # - services_use_sim_time=${services_use_sim_time}
+    command: ros2 launch /launch/planning-control.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit
+    # command: /bin/bash
+    # tty: true
+    # stdin_open: true
         # condition: service_healthy
         # timeout: 60s
