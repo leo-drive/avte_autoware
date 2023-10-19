@@ -85,9 +85,4 @@
     xhost + 
 
     # Run the container
-    sudo docker run -it --rm --net=host --privileged --runtime nvidia -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix image:tag /bin/bash
-    ```
-6. Run the image using rocker
-    ```bash
-    rocker --nvidia --x11 --volume exact_path_to_dir image:tag /bin/bash
-    ```
+    sudo docker run -it --rm --net=host --gpus all --runtime nvidia -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix image:tag /bin/bash
