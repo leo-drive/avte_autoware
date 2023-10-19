@@ -5,9 +5,7 @@ group "default" {
 // For docker/metadata-action
 target "docker-metadata-action-base" {}
 target "docker-metadata-action-devel" {}
-target "docker-metadata-action-prebuilt0" {}
 target "docker-metadata-action-prebuilt" {}
-target "docker-metadata-action-prebuilt-sim" {}
 target "docker-metadata-action-monolithic" {}
 target "docker-metadata-action-main-perception" {}
 target "docker-metadata-action-simulator" {}
@@ -25,22 +23,10 @@ target "devel" {
   target = "devel"
 }
 
-target "prebuilt0" {
-  inherits = ["docker-metadata-action-prebuilt0"]
-  dockerfile = "docker/autoware-openadk/base/Dockerfile"
-  target = "prebuilt0"
-}
-
 target "prebuilt" {
   inherits = ["docker-metadata-action-prebuilt"]
   dockerfile = "docker/autoware-openadk/base/Dockerfile"
   target = "prebuilt"
-}
-
-target "prebuilt-sim" {
-  inherits = ["docker-metadata-action-prebuilt-sim"]
-  dockerfile = "docker/autoware-openadk/base/Dockerfile"
-  target = "prebuilt-sim"
 }
 
 target "monolithic" {
