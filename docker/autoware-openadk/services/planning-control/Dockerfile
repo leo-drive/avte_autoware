@@ -12,8 +12,9 @@ COPY docker/autoware-openadk/services/planning-control/launch/ /launch/
 
 # Copy install folder from prebuilt
 FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
-FROM base as runtime
+FROM base as planning-control
 COPY --from=prebuilt /autoware/install/ /autoware/install/
+COPY autoware.repos /autoware/
 
 # Set up runtime environment
 #TODO: rosdep for only required packages

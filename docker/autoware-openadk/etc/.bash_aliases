@@ -1,5 +1,8 @@
-alias awf-launch-sample-planning-sim='ros2 launch autoware_launch planning_simulator.launch.xml map_path:=/autoware_map/sample-map-planning vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
+# scenario planning simulator
+alias awf-launch-planning-scenario-sim='ros2 launch scenario_test_runner scenario_test_runner.launch.py architecture_type:=awf/universe record:=false scenario:=/autoware/scenario/yield_maneuver_demo.yaml sensor_model:=sample_sensor_kit vehicle_model:=sample_vehicle map_path:=/autoware/scenario/map/'
 
-alias awf-launch-sample-replay-sim='ros2 launch autoware_launch logging_simulator.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
+# rosbag replay simulator
+alias awf-launch-sample-rosbag-sim='ros2 launch autoware_launch logging_simulator.launch.xml map_path:=/autoware/map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
 
-alias awf-replay-sample-rosbag='ros2 bag play /autoware_map/sample-rosbag/sample.db3 -r 0.8 -s sqlite3'
+# vanilla autoware launch
+alias awf-launch-autoware='ros2 launch autoware_launch autoware.launch.xml map_path:=/autoware/map/sample-map-rosbag/ vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'

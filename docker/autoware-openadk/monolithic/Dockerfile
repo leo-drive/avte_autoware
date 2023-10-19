@@ -8,11 +8,11 @@ ARG PLATFORM
 ARG ROS_DISTRO
 
 # Copy bash aliases
-COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
+COPY autoware.repos simulator.repos /autoware/
 
 # Copy install folder from prebuilt
 FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
-FROM base as runtime
+FROM base as monolithic
 COPY --from=prebuilt /autoware/install/ /autoware/install/
 
 # Set up runtime environment
@@ -21,6 +21,7 @@ RUN --mount=type=ssh \
   && pip uninstall -y ansible ansible-core \
   && mkdir src \
   && vcs import src < autoware.repos \
+  && vcs import src < simulator.repos \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \ 
   && apt-get clean \
@@ -46,7 +47,7 @@ RUN --mount=type=ssh \
 
 # Bugfix rviz2 black-screen problem with some nvidia drivers: https://github.com/ros2/rviz/issues/948
 RUN apt update && apt install -y software-properties-common && add-apt-repository ppa:kisak/kisak-mesa && apt install -y \
-  libegl-mesa0 libegl1-mesa-dev libgbm-dev libgbm1 libgl1-mesa-dev libgl1-mesa-dri libglapi-mesa libglx-mesa0
+  libegl-mesa0 libegl1-mesa-dev libgbm-dev libgbm1 libgl1-mesa-dev libgl1-mesa-dri libglapi-mesa libglx-mesa0 vim
 
 # Register Vulkan GPU vendors
 RUN curl https://gitlab.com/nvidia/container-images/vulkan/raw/dc389b0445c788901fda1d85be96fd1cb9410164/nvidia_icd.json -o /etc/vulkan/icd.d/nvidia_icd.json \
@@ -58,6 +59,13 @@ RUN curl https://gitlab.com/nvidia/container-images/opengl/raw/5191cf205d3e4bb11
 RUN mkdir -p /etc/OpenCL/vendors \
   && echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd \
   && chmod 644 /etc/OpenCL/vendors/nvidia.icd
+
+# Copy simulation files
+RUN mkdir -p /autoware/simulation
+COPY docker/autoware-openadk/simulation/planning/ /autoware/simulation/
+
+# Copy bash aliases
+COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
 
 # Create entrypoint
 # hadolint ignore=DL3059
