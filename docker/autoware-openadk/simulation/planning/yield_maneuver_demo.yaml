@@ -13,9 +13,9 @@ OpenSCENARIO:
     CatalogLocation: []
   RoadNetwork:
     LogicFile:
-      filepath: /scenario/map/lanelet2_map.osm
+      filepath: /autoware/scenario-sim/map/lanelet2_map.osm
     SceneGraphFile:
-      filepath: /scenario/map/pointcloud_map.pcd
+      filepath: /autoware/scenario-sim/map/pointcloud_map.pcd
     TrafficSignals:
       TrafficSignalController: []
   Entities:

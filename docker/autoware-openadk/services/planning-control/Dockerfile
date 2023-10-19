@@ -14,14 +14,14 @@ COPY docker/autoware-openadk/services/planning-control/launch/ /launch/
 FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
 FROM base as planning-control
 COPY --from=prebuilt /autoware/install/ /autoware/install/
-COPY autoware.repos /autoware/
+COPY autoware.repos simulator.repos /autoware/
 
 # Set up runtime environment
-#TODO: rosdep for only required packages
 RUN --mount=type=ssh \
   ./setup-dev-env.sh -y --module planning-control --runtime openadk \
   && pip uninstall -y ansible ansible-core \
   && mkdir src \
+  && vcs import src < simulator.repos \
   && vcs import src < autoware.repos \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --rosdistro "$ROS_DISTRO" --ignore-src --from-paths src \
@@ -51,39 +51,21 @@ RUN --mount=type=ssh \
 RUN apt update && apt install -y software-properties-common && add-apt-repository ppa:kisak/kisak-mesa && apt install -y \
   libegl-mesa0 libegl1-mesa-dev libgbm-dev libgbm1 libgl1-mesa-dev libgl1-mesa-dri libglapi-mesa libglx-mesa0
 
-# Register Vulkan GPU vendors
-RUN curl https://gitlab.com/nvidia/container-images/vulkan/raw/dc389b0445c788901fda1d85be96fd1cb9410164/nvidia_icd.json -o /etc/vulkan/icd.d/nvidia_icd.json \
-  && chmod 644 /etc/vulkan/icd.d/nvidia_icd.json
-RUN curl https://gitlab.com/nvidia/container-images/opengl/raw/5191cf205d3e4bb1150091f9464499b076104354/glvnd/runtime/10_nvidia.json -o /etc/glvnd/egl_vendor.d/10_nvidia.json \
-  && chmod 644 /etc/glvnd/egl_vendor.d/10_nvidia.json
-
-# Register OpenCL GPU vendors
-RUN mkdir -p /etc/OpenCL/vendors \
-  && echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd \
-  && chmod 644 /etc/OpenCL/vendors/nvidia.icd
-
 # Create entrypoint
 # hadolint ignore=DL3059
 COPY docker/autoware-openadk/etc/ros_entrypoint.sh /ros_entrypoint.sh
 RUN chmod +x /ros_entrypoint.sh
 
-RUN source /usr/share/bash-completion/completions/git
-RUN source /opt/ros/humble/setup.bash
-RUN source /autoware/install/setup.bash
+# Copy simulation files
+RUN mkdir -p /autoware/scenario-sim
+COPY docker/autoware-openadk/simulation/planning/ /autoware/scenario-sim/
 
-RUN echo "source /usr/share/bash-completion/completions/git" >> /root/.profile \
-  && echo "source /opt/ros/humble/setup.bash" >> /root/.profile \
-  && echo "source /autoware/install/setup.bash" >> /root/.profile \
-  && echo "export ROS_DOMAIN_ID=74" >> /root/.profile 
-  # && echo "export ROS_LOCALHOST_ONLY=1" >> /root/.profile
+# Copy bash aliases
+COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
 
-RUN echo "source /usr/share/bash-completion/completions/git" >> /root/.bashrc \
-  && echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc \
-  && echo "source /autoware/install/setup.bash" >> /root/.bashrc \
-  && echo "export ROS_DOMAIN_ID=74" >> /root/.bashrc 
-  # && echo "export ROS_LOCALHOST_ONLY=1" >> /root/.bashrc
-
-ENV ROS_DOMAIN_ID=1
+# Create entrypoint
+# hadolint ignore=DL3059
+RUN echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]

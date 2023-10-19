@@ -10,6 +10,7 @@ ARG ROS_DISTRO
 # Copy bash aliases
 COPY autoware.repos simulator.repos /autoware/
 
+RUN ls
 # Copy install folder from prebuilt
 FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
 FROM base as monolithic
@@ -60,9 +61,14 @@ RUN mkdir -p /etc/OpenCL/vendors \
   && echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd \
   && chmod 644 /etc/OpenCL/vendors/nvidia.icd
 
+# Create entrypoint
+# hadolint ignore=DL3059
+COPY docker/autoware-openadk/etc/ros_entrypoint.sh /ros_entrypoint.sh
+RUN chmod +x /ros_entrypoint.sh
+
 # Copy simulation files
-RUN mkdir -p /autoware/simulation
-COPY docker/autoware-openadk/simulation/planning/ /autoware/simulation/
+RUN mkdir -p /autoware/scenario-sim
+COPY docker/autoware-openadk/simulation/planning/ /autoware/scenario-sim/
 
 # Copy bash aliases
 COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
@@ -70,4 +76,6 @@ COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
 # Create entrypoint
 # hadolint ignore=DL3059
 RUN echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
-CMD ["/bin/bash"]
+
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["bash"]
