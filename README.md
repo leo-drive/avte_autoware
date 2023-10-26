@@ -11,9 +11,6 @@ Open AD Kit is also capable of getting OTA updates by using [eSync Alliance's](h
 ## Open AD Kit Architecture
 ![AD Kit Architecture](https://user-images.githubusercontent.com/21222428/231436248-f745830d-a74f-42e0-8afe-fd58f6dbc8fc.jpg)
 
-![roscubex_demo_exp](https://github.com/leo-drive/avte_autoware/assets/15357471/39ce521b-cc63-4645-9b41-01a79c50a2bf)
-
-
 ## Using Open AD Kit
 
 ### Hardware Prerequisites
@@ -80,28 +77,6 @@ To test the Open AD Kit monolithic image using pre-installed simulation data, on
     ```bash
     awf-replay-sample-rosbag
     ```
-
-### Demo
-
-#### Planning Demo - Before OTA Update
-
-[![OpenAD Kit Planning Demo - Before OTA](https://img.youtube.com/vi/Xo_ImgxFTZc/0.jpg)](https://www.youtube.com/watch?v=Xo_ImgxFTZc)
-
-#### Planning Demo - After OTA Update
-
-[![OpenAD Kit Planning Demo - After OTA](https://img.youtube.com/vi/Fhj-mV8WpAQ/0.jpg)](https://www.youtube.com/watch?v=Fhj-mV8WpAQ)
-
-#### Perception Demo - Before OTA Update
-
-[![OpenAD Kit Perception Demo - Before OTA](https://img.youtube.com/vi/I7pXttPDtqQ/0.jpg)](https://www.youtube.com/watch?v=I7pXttPDtqQ)
-
-#### Perception Demo - After OTA Update
-
-[![OpenAD Kit Perception Demo - After OTA](https://img.youtube.com/vi/V5AnXL-JGAk/0.jpg)](https://www.youtube.com/watch?v=V5AnXL-JGAk)
-
-#### OTA Update UI
-
-[![OTA Update UI](https://img.youtube.com/vi/LfrokyLRQoc/0.jpg)](https://www.youtube.com/watch?v=LfrokyLRQoc)
 
 ## Further Documentation
 
