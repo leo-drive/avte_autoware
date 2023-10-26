@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["base", "devel", "prebuilt"]
+  targets = ["base", "devel", "prebuilt", "monolithic", "simulator"]
 }
 
 // For docker/metadata-action
@@ -55,7 +55,7 @@ target "planning-control" {
 }
 
 target "simulator" {
-  inherits = ["docker-metadata-action-planning-control"]
-  dockerfile = "docker/autoware-openadk/services/planning-control/Dockerfile"
-  target = "planning-control"
+  inherits = ["docker-metadata-action-simulator"]
+  dockerfile = "docker/autoware-openadk/services/simulator/Dockerfile"
+  target = "simulator"
 }

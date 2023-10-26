@@ -63,12 +63,13 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl"
     --set "*.args.PLATFORM=$platform" \
     --set "*.args.ROS_DISTRO=$rosdistro" \
     --set "*.args.BASE_IMAGE=$base_image" \
-    --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:oad-base-$rosdistro-$platform" \
-    --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:oad-devel-$rosdistro-$platform" \
-    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:oad-prebuilt-$rosdistro-$platform" \
-    --set "prebuilt-sim.tags=ghcr.io/autowarefoundation/autoware-openadk:oad-prebuilt-sim-$rosdistro-$platform" \
-    --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-$platform" \
-    --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-main-perception-$rosdistro-$platform" \
-    --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-before-planning-$rosdistro-$platform" \
+    --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-$platform" \
+    --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:devel-$rosdistro-$platform" \
+    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform" \
+    --set "prebuilt-sim.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-sim-$rosdistro-$platform" \
+    --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:monolithic-$rosdistro-$platform" \
+    --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:main-perception-$rosdistro-$platform" \
+    --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:planning-control-$rosdistro-$platform" \
+    --set "simulator.tags=ghcr.io/autowarefoundation/autoware-openadk:simulator-$rosdistro-$platform" \
     "${targets[@]}"
 set +x
