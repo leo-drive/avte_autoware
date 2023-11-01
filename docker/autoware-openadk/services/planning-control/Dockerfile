@@ -38,7 +38,7 @@ RUN apt update && apt install -y software-properties-common && add-apt-repositor
   libegl-mesa0 libegl1-mesa-dev libgbm-dev libgbm1 libgl1-mesa-dev libgl1-mesa-dri libglapi-mesa libglx-mesa0
 
 # Copy bash aliases
-COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
+COPY docker/autoware-openadk/services/planning-control/.bash_aliases /root/.bash_aliases
 
 # Copy launch file
 COPY docker/autoware-openadk/services/planning-control/launch/ /launch/
