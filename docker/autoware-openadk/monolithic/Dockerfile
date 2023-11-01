@@ -49,7 +49,7 @@ RUN mkdir -p /etc/OpenCL/vendors \
   && chmod 644 /etc/OpenCL/vendors/nvidia.icd
 
 # Copy bash aliases
-COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
+COPY docker/autoware-openadk/monolithic/.bash_aliases /root/.bash_aliases
 RUN echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
 
 # Create entrypoint
