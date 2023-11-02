@@ -1,16 +1,16 @@
 ARG PLATFORM
 ARG ROS_DISTRO
-FROM ghcr.io/autowarefoundation/autoware-openadk:base-${ROS_DISTRO}-${PLATFORM} as base
+FROM ghcr.io/autowarefoundation/autoware-openadk:base-${ROS_DISTRO}-${PLATFORM} as simulator
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG PLATFORM
 ARG ROS_DISTRO
 
-# Copy install folder from prebuilt
-FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-${ROS_DISTRO}-${PLATFORM} as prebuilt
-FROM base as simulator
-COPY --from=prebuilt /autoware/install/ /autoware/install/
+# # Copy install folder from prebuilt
+# FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-sim-${ROS_DISTRO}-${PLATFORM} as prebuilt
+# FROM base as simulator
+# COPY --from=prebuilt /autoware/install/ /autoware/install/
 
 COPY simulator.repos /autoware/
 
@@ -18,8 +18,20 @@ COPY simulator.repos /autoware/
 RUN --mount=type=ssh \
   mkdir src \
   && vcs import src < simulator.repos \
+  && vcs import src < /autoware/src/simulator/scenario_simulator/dependency_humble.repos \
+  && apt update \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --rosdistro "$ROS_DISTRO" --ignore-src --from-paths src \
+  && source /opt/ros/"$ROS_DISTRO"/setup.bash \
+  && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --cmake-args \
+    " -Wno-dev" \
+    " --no-warn-unused-cli" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+  && find /autoware/install -type d -exec chmod 777 {} \; \
+  && echo "source /autoware/install/setup.bash" > /etc/bash.bashrc \
   # Remove unnecessary files
   && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* "$HOME"/.cache \
   && find /usr/lib/$PLATFORM-linux-gnu -name "*.a" -type f -delete \

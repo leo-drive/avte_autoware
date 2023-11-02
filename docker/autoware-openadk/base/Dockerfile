@@ -83,21 +83,3 @@ RUN source /opt/ros/"$ROS_DISTRO"/setup.bash \
 
 # Create entrypoint
 CMD ["/bin/bash"]
-
-FROM prebuilt as prebuilt-sim
-ENV CMAKE_GENERATOR=Ninja
-ENV CCACHE_DIR=/ccache
-
-COPY simulator.repos /autoware/
-
-RUN source /opt/ros/"$ROS_DISTRO"/setup.bash \
-  && vcs import src < simulator.repos \
-  && apt update \
-  && rosdep update \
-  && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \
-  && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-skip-build-finished \
-  && find /autoware/install -type d -exec chmod 777 {} \; \
-  && echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
-
-# Create entrypoint
-CMD ["/bin/bash"]
