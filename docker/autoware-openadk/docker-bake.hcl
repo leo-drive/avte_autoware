@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["base", "devel", "prebuilt", "monolithic", "planning-control"]
+  targets = ["base", "devel", "prebuilt", "monolithic", "planning-control", "simulator"]
 }
 
 // For docker/metadata-action

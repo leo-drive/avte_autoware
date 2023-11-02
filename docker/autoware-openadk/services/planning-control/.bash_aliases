@@ -1,5 +1,12 @@
-# planning-control launch
-alias awf-launch-planning-control='ros2 launch /launch/planning-control.launch.xml map_path:=/autoware/map/ vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
+function download_planning_map() {
+    if [ ! -f ~/autoware_map/sample-map-planning.zip ]; then
+        gdown -O ~/autoware_map/ 'https://docs.google.com/uc?export=download&id=1499_nsbUbIeturZaDj7jhUownh5fvXHd'
+        unzip -d ~/autoware_map ~/autoware_map/sample-map-planning.zip
+    fi
+}
 
-# vanilla autoware launch
-alias awf-launch-autoware='ros2 launch autoware_launch autoware.launch.xml map_path:=/autoware/map/sample-map-rosbag/ vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
+alias awf-launch-planning-sim='download_planning_map&&ros2 launch autoware_launch planning_simulator.launch.xml map_path:=$HOME/autoware_map/sample-map-planning vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
+
+
+# planning-control launch
+alias awf-launch-with-sample-map='ros2 launch /launch/planning-control.launch.xml map_path:=$HOME/autoware_map/sample-map-planning vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit'
