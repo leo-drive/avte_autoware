@@ -13,8 +13,8 @@ while [ "$1" != "" ]; do
         option_platform="$2"
         shift
         ;;
-    --no-devel)
-        option_no_devel=true
+    --prebuilt-only)
+        option_prebuilt=true
         ;;
     *)
         args+=("$1")
@@ -40,10 +40,10 @@ if [ "$platform" = "aarch64" ]; then
 fi
 
 # Set build targets
-if [ "$option_no_devel" = "true" ]; then
-    targets=("runtime")
+if [ "$option_prebuilt" = "true" ]; then
+    targets=("base" "devel" "prebuilt")
 else
-    # default target includes devel and runtime
+    # default target includes all
     targets=()
 fi
 
@@ -66,7 +66,6 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-$platform" \
     --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:devel-$rosdistro-$platform" \
     --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform" \
-    --set "prebuilt-sim.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-sim-$rosdistro-$platform" \
     --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:monolithic-$rosdistro-$platform" \
     --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:main-perception-$rosdistro-$platform" \
     --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:planning-control-$rosdistro-$platform" \

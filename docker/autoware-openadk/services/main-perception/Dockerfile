@@ -16,7 +16,7 @@ COPY autoware.repos /autoware/
 
 # Set up runtime environment
 RUN --mount=type=ssh \
-  ./setup-dev-env.sh -y --module main-perception --no-cuda-drivers --runtime openadk \
+  ./setup-dev-env.sh -y --module main-perception --no-cuda-drivers openadk \
   && pip uninstall -y ansible ansible-core \
   && mkdir src \
   && vcs import src < autoware.repos \

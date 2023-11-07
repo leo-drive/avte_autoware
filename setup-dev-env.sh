@@ -31,10 +31,10 @@ while [ "$1" != "" ]; do
         # Disable installation of 'cuda-drivers' in the role 'cuda'.
         option_no_cuda_drivers=true
         ;;
-        --devel)
+    --devel)
         # Disable installation dev package of role 'cuda' and 'tensorrt'.
         option_devel=true
-        ;;
+    ;;
     *)
         args+=("$1")
         ;;
