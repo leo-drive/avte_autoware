@@ -13,8 +13,8 @@ while [ "$1" != "" ]; do
         option_platform="$2"
         shift
         ;;
-    --no-devel)
-        option_no_devel=true
+    --prebuilt-only)
+        option_prebuilt=true
         ;;
     *)
         args+=("$1")
@@ -40,10 +40,10 @@ if [ "$platform" = "aarch64" ]; then
 fi
 
 # Set build targets
-if [ "$option_no_devel" = "true" ]; then
-    targets=("runtime")
+if [ "$option_prebuilt" = "true" ]; then
+    targets=("base" "devel" "prebuilt")
 else
-    # default target includes devel and runtime
+    # default target includes all
     targets=()
 fi
 
