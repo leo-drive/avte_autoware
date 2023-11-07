@@ -7,11 +7,6 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG PLATFORM
 ARG ROS_DISTRO
 
-# # Copy install folder from prebuilt
-# FROM ghcr.io/autowarefoundation/autoware-openadk:prebuilt-sim-${ROS_DISTRO}-${PLATFORM} as prebuilt
-# FROM base as simulator
-# COPY --from=prebuilt /autoware/install/ /autoware/install/
-
 COPY simulator.repos /autoware/
 
 # Set up runtime environment
