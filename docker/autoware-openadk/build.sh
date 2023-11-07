@@ -66,7 +66,6 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-$platform" \
     --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:devel-$rosdistro-$platform" \
     --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform" \
-    --set "prebuilt-sim.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-sim-$rosdistro-$platform" \
     --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:monolithic-$rosdistro-$platform" \
     --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:main-perception-$rosdistro-$platform" \
     --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:planning-control-$rosdistro-$platform" \
