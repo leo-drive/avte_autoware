@@ -17,8 +17,6 @@
           - tensorrt_version: "{{ tensorrt_version }}"
   roles:
     # Autoware Universe base dependencies
-    - role: autoware.dev_env.ros2
-      when: module == 'base' or module == 'all'
     - role: autoware.dev_env.rmw_implementation
       when: module == 'base' or module == 'all'
     - role: autoware.dev_env.plotjuggler
@@ -26,6 +24,8 @@
     - role: autoware.dev_env.pre_commit
       when: module == 'developer'
     - role: autoware.dev_env.ros2_dev_tools
+      when: module == 'developer'
+    - role: autoware.dev_env.git_lfs
       when: module == 'developer'
 
     # Module specific dependencies
