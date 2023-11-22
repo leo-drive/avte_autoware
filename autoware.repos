@@ -58,7 +58,7 @@ repositories:
   universe/autoware.universe:
     type: git
     url: https://github.com/leo-drive/avte.autoware_universe.git
-    version: c9ae7eb77bd4664fdd6c97db650054d695330464
+    version: main
   universe/external/eagleye:
     type: git
     url: https://github.com/MapIV/eagleye.git
