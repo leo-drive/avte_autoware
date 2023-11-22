@@ -23,6 +23,7 @@ RUN --mount=type=ssh \
   && mkdir src \
   && vcs import src < autoware.repos \
   && vcs import src < simulator.repos \
+  && apt update \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \ 
   && apt-get clean \

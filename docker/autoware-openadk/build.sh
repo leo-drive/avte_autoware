@@ -72,6 +72,6 @@ if [ "$option_no_runtime" = "false" ]; then
         --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-$platform" \
         --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-main-perception-$rosdistro-$platform" \
         --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-before-planning-$rosdistro-$platform" \
-        monolithic main-perception planning-control
+        planning-control
 fi
 set +x
