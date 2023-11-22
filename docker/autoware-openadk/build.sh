@@ -6,6 +6,7 @@ SCRIPT_DIR=$(readlink -f "$(dirname "$0")")
 WORKSPACE_ROOT="$SCRIPT_DIR/../../"
 
 # Parse arguments
+option_no_runtime=false
 args=()
 while [ "$1" != "" ]; do
     case "$1" in
@@ -13,8 +14,8 @@ while [ "$1" != "" ]; do
         option_platform="$2"
         shift
         ;;
-    --prebuilt-only)
-        option_prebuilt=true
+    --devel-only)
+        option_no_runtime=true
         ;;
     *)
         args+=("$1")
@@ -39,14 +40,6 @@ if [ "$platform" = "aarch64" ]; then
     source "$WORKSPACE_ROOT/arm64.env"
 fi
 
-# Set build targets
-if [ "$option_prebuilt" = "true" ]; then
-    targets=("base" "devel" "prebuilt")
-else
-    # default target includes all
-    targets=()
-fi
-
 # https://github.com/docker/buildx/issues/484
 export BUILDKIT_STEP_LOG_MAX_SIZE=10000000
 
@@ -55,7 +48,7 @@ export platform
 export rosdistro
 
 set -x
-# Build base images
+# Build base,devel,prebuilt images
 docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "*.context=$WORKSPACE_ROOT" \
     --set "*.ssh=default" \
@@ -65,10 +58,21 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "*.args.BASE_IMAGE=$base_image" \
     --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-$platform" \
     --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:devel-$rosdistro-$platform" \
-    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform" \
+    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform"
+
+# Build runtime images
+if [ "$option_no_runtime" = "false" ]; then
+    docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
+    --set "*.context=$WORKSPACE_ROOT" \
+    --set "*.ssh=default" \
+    --set "*.platform=$platform" \
+    --set "*.args.PLATFORM=$platform" \
+    --set "*.args.ROS_DISTRO=$rosdistro" \
+    --set "*.args.BASE_IMAGE=$base_image" \
     --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:monolithic-$rosdistro-$platform" \
     --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:main-perception-$rosdistro-$platform" \
     --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:planning-control-$rosdistro-$platform" \
     --set "simulator.tags=ghcr.io/autowarefoundation/autoware-openadk:simulator-$rosdistro-$platform" \
-    "${targets[@]}"
+    monolithic main-perception planning-control simulator
+fi
 set +x
