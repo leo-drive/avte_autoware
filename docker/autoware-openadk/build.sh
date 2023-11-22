@@ -13,8 +13,8 @@ while [ "$1" != "" ]; do
         option_platform="$2"
         shift
         ;;
-    --no-devel)
-        option_no_devel=true
+    --prebuilt-only)
+        option_no_runtime=true
         ;;
     *)
         args+=("$1")
@@ -39,14 +39,6 @@ if [ "$platform" = "aarch64" ]; then
     source "$WORKSPACE_ROOT/arm64.env"
 fi
 
-# Set build targets
-if [ "$option_no_devel" = "true" ]; then
-    targets=("runtime")
-else
-    # default target includes devel and runtime
-    targets=()
-fi
-
 # https://github.com/docker/buildx/issues/484
 export BUILDKIT_STEP_LOG_MAX_SIZE=10000000
 
@@ -66,17 +58,19 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl"
     --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-$platform" \
     --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:devel-$rosdistro-$platform" \
     --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform" \
-    "${targets[@]}"
 
-docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl" \
-    --set "*.context=$WORKSPACE_ROOT" \
-    --set "*.ssh=default" \
-    --set "*.platform=$platform" \
-    --set "*.args.PLATFORM=$platform" \
-    --set "*.args.ROS_DISTRO=$rosdistro" \
-    --set "*.args.BASE_IMAGE=$base_image" \
-    --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-$platform" \
-    --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-main-perception-$rosdistro-$platform" \
-    --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-before-planning-$rosdistro-$platform" \
-    monolithic main-perception planning-control
+# Set build targets
+if [ "$option_no_runtime" = "true" ]; then
+    docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl" \
+        --set "*.context=$WORKSPACE_ROOT" \
+        --set "*.ssh=default" \
+        --set "*.platform=$platform" \
+        --set "*.args.PLATFORM=$platform" \
+        --set "*.args.ROS_DISTRO=$rosdistro" \
+        --set "*.args.BASE_IMAGE=$base_image" \
+        --set "monolithic.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-monolithic-$rosdistro-$platform" \
+        --set "main-perception.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-main-perception-$rosdistro-$platform" \
+        --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-before-planning-$rosdistro-$platform" \
+        monolithic main-perception planning-control
+fi
 set +x
