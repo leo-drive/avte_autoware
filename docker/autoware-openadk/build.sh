@@ -6,6 +6,7 @@ SCRIPT_DIR=$(readlink -f "$(dirname "$0")")
 WORKSPACE_ROOT="$SCRIPT_DIR/../../"
 
 # Parse arguments
+option_no_runtime=false
 args=()
 while [ "$1" != "" ]; do
     case "$1" in
@@ -60,7 +61,7 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl"
     --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform" \
 
 # Set build targets
-if [ "$option_no_runtime" = "true" ]; then
+if [ "$option_no_runtime" = "false" ]; then
     docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl" \
         --set "*.context=$WORKSPACE_ROOT" \
         --set "*.ssh=default" \
