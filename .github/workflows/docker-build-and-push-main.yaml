@@ -12,22 +12,27 @@ on:
 jobs:
   docker-build-and-push-main:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        name:
-          - no-cuda
-          - cuda
-        include:
-          - name: no-cuda
-            base_image_env: base_image
-            setup-args: --no-nvidia
-            additional-tag-suffix: ""
-          - name: cuda
-            base_image_env: cuda_base_image
-            setup-args: --no-cuda-drivers
-            additional-tag-suffix: -cuda
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     name:
+    #       - no-cuda
+    #       - cuda
+    #     include:
+    #       - name: no-cuda
+    #         base_image_env: base_image
+    #         setup-args: --no-nvidia
+    #         additional-tag-suffix: ""
+    #       - name: cuda
+    #         base_image_env: cuda_base_image
+    #         setup-args: --no-cuda-drivers
+    #         additional-tag-suffix: -cuda
     steps:
+      # https://github.com/actions/checkout/issues/211
+      - name: Change permission of workspace
+        run: |
+          sudo chown -R $USER:$USER ${{ github.workspace }}
+          
       - name: Check out repository
         uses: actions/checkout@v3
 
@@ -44,15 +49,13 @@ jobs:
       - name: Build 'autoware-universe'
         uses: ./.github/actions/docker-build-and-push
         with:
-          bake-target: autoware-universe
+          bake-target: autoware-openadk
           build-args: |
             *.platform=linux/amd64
             *.args.ROS_DISTRO=${{ env.rosdistro }}
-            *.args.BASE_IMAGE=${{ env[format('{0}', matrix.base_image_env)] }}
-            *.args.PREBUILT_BASE_IMAGE=${{ env.prebuilt_base_image }}
-            *.args.SETUP_ARGS=${{ matrix.setup-args }}
+            *.args.BASE_IMAGE=${{ env.base_image }}
           tag-prefix: ${{ env.rosdistro }}-
-          tag-suffix: ${{ matrix.additional-tag-suffix }}-amd64
+          tag-suffix: -amd64
 
       - name: Show disk space
         run: |
