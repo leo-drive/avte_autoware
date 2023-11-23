@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["base", "devel", "prebuilt", "runtime-planning-control"]
+  targets = ["base", "devel", "prebuilt"]
 }
 
 // For docker/metadata-action
