@@ -49,7 +49,7 @@ export rosdistro
 
 set -x
 # Build base images
-docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl" \
+docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "*.context=$WORKSPACE_ROOT" \
     --set "*.ssh=default" \
     --set "*.platform=$platform" \
@@ -62,7 +62,7 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl"
 
 # Set build targets
 if [ "$option_no_runtime" = "false" ]; then
-    docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/base/docker-bake.hcl" \
+    docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
         --set "*.context=$WORKSPACE_ROOT" \
         --set "*.ssh=default" \
         --set "*.platform=$platform" \

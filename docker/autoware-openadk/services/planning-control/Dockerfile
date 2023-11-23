@@ -23,7 +23,7 @@ RUN --mount=type=ssh \
   && mkdir src \
   && vcs import src < simulator.repos \
   && vcs import src < autoware.repos \
-  && apt update \
+  && apt-get update \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --rosdistro "$ROS_DISTRO" --ignore-src --from-paths src \
   # Remove unnecessary files

@@ -54,6 +54,18 @@ runs:
         echo ::set-output name=tags::$tags_multiline
       shell: bash
 
+    - name: Docker meta for base
+      id: meta-base
+      uses: docker/metadata-action@v4
+      with:
+        images: ghcr.io/${{ github.repository_owner }}/${{ inputs.bake-target }}
+        tags: ${{ steps.set-docker-tags.outputs.tags }}
+        bake-target: docker-metadata-action-base
+        flavor: |
+          latest=false
+          prefix=${{ inputs.tag-prefix }}
+          suffix=-base${{ inputs.tag-suffix }}
+          
     - name: Docker meta for devel
       id: meta-devel
       uses: docker/metadata-action@v4
@@ -64,7 +76,7 @@ runs:
         flavor: |
           latest=false
           prefix=${{ inputs.tag-prefix }}
-          suffix=${{ inputs.tag-suffix }}
+          suffix=-devel${{ inputs.tag-suffix }}
 
     - name: Docker meta for prebuilt
       id: meta-prebuilt
@@ -77,6 +89,30 @@ runs:
           latest=false
           prefix=${{ inputs.tag-prefix }}
           suffix=-prebuilt${{ inputs.tag-suffix }}
+        
+    - name: Docker meta for runtime-monolithic
+      id: meta-runtime-monolithic
+      uses: docker/metadata-action@v4
+      with:
+        images: ghcr.io/${{ github.repository_owner }}/${{ inputs.bake-target }}
+        tags: ${{ steps.set-docker-tags.outputs.tags }}
+        bake-target: docker-metadata-action-runtime-monolithic
+        flavor: |
+          latest=false
+          prefix=${{ inputs.tag-prefix }}
+          suffix=-runtime-monolithic${{ inputs.tag-suffix }}
+    
+    - name: Docker meta for runtime-planning-control
+      id: meta-runtime-planning-control
+      uses: docker/metadata-action@v4
+      with:
+        images: ghcr.io/${{ github.repository_owner }}/${{ inputs.bake-target }}
+        tags: ${{ steps.set-docker-tags.outputs.tags }}
+        bake-target: docker-metadata-action-runtime-planning-control
+        flavor: |
+          latest=false
+          prefix=${{ inputs.tag-prefix }}
+          suffix=-runtime-planning-control${{ inputs.tag-suffix }}
 
     - name: Login to GitHub Container Registry
       if: ${{ github.event_name != 'pull_request' }}
@@ -90,10 +126,14 @@ runs:
       uses: docker/bake-action@v2
       with:
         # Checking event_name for https://github.com/autowarefoundation/autoware/issues/2796
-        push: ${{ github.event_name == 'schedule' || github.ref_name == github.event.repository.default_branch || github.event_name == 'push'}}
+        # ${{ github.event_name == 'schedule' || github.ref_name == github.event.repository.default_branch || github.event_name == 'push'}}
+        push: true
         files: |
           docker/${{ inputs.bake-target }}/docker-bake.hcl
+          ${{ steps.meta-base.outputs.bake-file }}
           ${{ steps.meta-devel.outputs.bake-file }}
           ${{ steps.meta-prebuilt.outputs.bake-file }}
+          ${{ steps.meta-runtime-monolithic.outputs.bake-file }}
+          ${{ steps.meta-runtime-planning-control.outputs.bake-file }}
         set: |
           ${{ inputs.build-args }}
