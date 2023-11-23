@@ -1,15 +1,15 @@
 group "default" {
-  targets = ["base", "devel", "prebuilt", "runtime-monolithic", , "runtime-planning-control"]
+  targets = ["base", "devel", "prebuilt", "runtime-planning-control"]
 }
 
 // For docker/metadata-action
 target "docker-metadata-action-base" {}
 target "docker-metadata-action-devel" {}
 target "docker-metadata-action-prebuilt" {}
-target "docker-metadata-action-monolithic" {}
-target "docker-metadata-action-main-perception" {}
+target "docker-metadata-action-runtime-monolithic" {}
+target "docker-metadata-action-runtime-main-perception" {}
+target "docker-metadata-action-runtime-planning-control" {}
 target "docker-metadata-action-simulator" {}
-target "docker-metadata-action-planning-control" {}
 
 target "base" {
   inherits = ["docker-metadata-action-base"]
@@ -36,6 +36,7 @@ target "runtime-monolithic" {
 }
 
 target "runtime-main-perception" {
+
   inherits = ["docker-metadata-action-main-perception"]
   dockerfile = "docker/autoware-openadk/services/main-perception/Dockerfile"
   target = "main-perception"

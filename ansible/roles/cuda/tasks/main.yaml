@@ -8,22 +8,6 @@
   register: cuda_architecture
   changed_when: false
 
-- name: (tmp for Ubuntu 22.04) Add liburcu6 repository into sources.list for amd64
-  become: true
-  ansible.builtin.apt_repository:
-    repo: deb http://archive.ubuntu.com/ubuntu focal main restricted
-    filename: focal
-    state: present
-  when: cuda_architecture.stdout == "x86_64"
-
-- name: (tmp for Ubuntu 22.04) Add liburcu6 repository into sources.list for arm64
-  become: true
-  ansible.builtin.apt_repository:
-    repo: deb http://ports.ubuntu.com/ubuntu-ports focal main restricted
-    filename: focal
-    state: present
-  when: cuda_architecture.stdout == "aarch64"
-
 - name: Remove old /etc/apt/sources.list.d/cuda.list
   become: true
   ansible.builtin.file:
@@ -33,7 +17,7 @@
 - name: Install CUDA keyring
   become: true
   ansible.builtin.apt:
-    deb: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/{{ cuda_architecture.stdout }}/cuda-keyring_1.0-1_all.deb
+    deb: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/{{ cuda_architecture.stdout }}/cuda-keyring_1.1-1_all.deb 
     update_cache: true
 
 - name: Get dash-case name of cuda_version
@@ -45,16 +29,17 @@
   become: true
   ansible.builtin.apt:
     name:
-      - cuda-cudart-dev-{{ dash_case_cuda_version.stdout }}
+      # - cuda-cudart-dev-{{ dash_case_cuda_version.stdout }}
       - cuda-command-line-tools-{{ dash_case_cuda_version.stdout }}
       - cuda-minimal-build-{{ dash_case_cuda_version.stdout }}
-      - cuda-libraries-dev-{{ dash_case_cuda_version.stdout }}
-      - cuda-nvml-dev-{{ dash_case_cuda_version.stdout }}
-      - cuda-nvprof-{{ dash_case_cuda_version.stdout }}
-      - libnpp-dev-{{ dash_case_cuda_version.stdout }}
+      # - cuda-libraries-dev-{{ dash_case_cuda_version.stdout }}
+      # - cuda-nvml-dev-{{ dash_case_cuda_version.stdout }}
+      # - cuda-nvprof-{{ dash_case_cuda_version.stdout }}
+      # - libnpp-dev-{{ dash_case_cuda_version.stdout }}
       - libcusparse-dev-{{ dash_case_cuda_version.stdout }}
       - libcublas-dev-{{ dash_case_cuda_version.stdout }}
-      - libnccl-dev
+      - libcurand-dev-{{ dash_case_cuda_version.stdout }}
+      # - libnccl-dev
     update_cache: true
   when: install_devel == 'true'
 
@@ -62,18 +47,18 @@
   become: true
   ansible.builtin.apt:
     name:
-      - cuda-cudart-{{ dash_case_cuda_version.stdout }}
-      # - cuda-command-line-tools-{{ dash_case_cuda_version.stdout }} # test !
-      # - cuda-minimal-build-{{ dash_case_cuda_version.stdout }} # test !
-      - cuda-libraries-{{ dash_case_cuda_version.stdout }}
-      # - cuda-nvml-dev-{{ dash_case_cuda_version.stdout }} # test !
-      # - cuda-nvprof-{{ dash_case_cuda_version.stdout }} # test !
-      - libnpp-{{ dash_case_cuda_version.stdout }}
+      # - cuda-cudart-{{ dash_case_cuda_version.stdout }}
+      # - cuda-command-line-tools-{{ dash_case_cuda_version.stdout }}
+      - cuda-minimal-build-{{ dash_case_cuda_version.stdout }}
+      # - cuda-libraries-{{ dash_case_cuda_version.stdout }}
+      # - cuda-nvml-dev-{{ dash_case_cuda_version.stdout }}
+      # - cuda-nvprof-{{ dash_case_cuda_version.stdout }}
+      # - libnpp-{{ dash_case_cuda_version.stdout }}
       - libcusparse-{{ dash_case_cuda_version.stdout }}
       - libcublas-{{ dash_case_cuda_version.stdout }}
-      - libnccl2 # test!
+      - libcurand-{{ dash_case_cuda_version.stdout }}
+      # - libnccl2 # test!
     update_cache: true
-  # when: install_devel == 'false'
 
 - name: Install cuda-drivers
   become: true

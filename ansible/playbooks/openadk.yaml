@@ -21,16 +21,12 @@
       when: module == 'base' or module == 'all'
     - role: autoware.dev_env.rmw_implementation
       when: module == 'base' or module == 'all'
-    - role: autoware.dev_env.gdown
-      when: module == 'base' or module == 'all'
-    - role: autoware.dev_env.ccache
-      when: (module == 'base' or module == 'all') and install_devel == 'true'
     - role: autoware.dev_env.plotjuggler
-      when: (module == 'base' or module == 'all') and install_devel == 'true'
+      when: module == 'developer'
     - role: autoware.dev_env.pre_commit
-      when: (module == 'base' or module == 'all') and install_devel == 'true'
+      when: module == 'developer'
     - role: autoware.dev_env.ros2_dev_tools
-      when: (module == 'base' or module == 'all') and install_devel == 'true'
+      when: module == 'developer'
 
     # Module specific dependencies
     - role: autoware.dev_env.geographiclib

@@ -44,7 +44,7 @@ To build the Open AD Kit application, run the following command:
 
 ```bash
 cd docker/autoware-openadk
-./build.sh # can give --module <module_name> to build a specific module, by default monolithic build is performed
+./build.sh
 ```
 
 ### Run
@@ -63,19 +63,19 @@ To test the Open AD Kit monolithic image using pre-installed simulation data, on
 - Run the following command for the planning simulation:
 
   ```bash
-  awf-launch-sample-planning-sim
+  awf-launch-planning-sim
   ```
 
 - For the rosbag replay simulation, run the following command:
 
   ```bash
-  awf-launch-sample-replay-sim
+  awf-launch-sample-rosbag-sim
   ```
 
-  - And to replay the sample rosbag from another terminal:
+  - And to replay the sample rosbag from another container run:
 
     ```bash
-    awf-replay-sample-rosbag
+    awf-play-sample-rosbag
     ```
 
 ## Further Documentation

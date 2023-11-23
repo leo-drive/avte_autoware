@@ -1,89 +1,85 @@
 ARG BASE_IMAGE
 
-# hadolint ignore=DL3006
 FROM $BASE_IMAGE as base
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
 ARG ROS_DISTRO
 
 # Install apt packages
-# hadolint ignore=DL3008
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
   git \
   ssh \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-# Copy files
-COPY setup-dev-env.sh ansible-galaxy-requirements.yaml amd64.env arm64.env /autoware/
-COPY ansible/ /autoware/ansible/
-WORKDIR /autoware
-RUN ls /autoware
+  wget \
+  cmake \
+  ccache \
+  curl \
+  gnupg \
+  lsb-release \
+  ninja-build \
+  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* "$HOME"/.cache
 
 # Add GitHub to known hosts for private repositories
 RUN mkdir -p ~/.ssh \
   && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
+# Copy files
+COPY setup-dev-env.sh ansible-galaxy-requirements.yaml amd64.env arm64.env /autoware/
+COPY ansible/ /autoware/ansible/
+WORKDIR /autoware
+
 # Set up development environment
 RUN --mount=type=ssh \
-  ./setup-dev-env.sh -y --module base openadk --runtime \
+  ./setup-dev-env.sh -y --module base openadk \
   && pip uninstall -y ansible ansible-core \
-  && pip install vcstool \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  "$HOME"/.cache
+  && pip install vcstool gdown \
+  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* "$HOME"/.cache \
+  && echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/bash.bashrc
 
 # Create entrypoint
-# hadolint ignore=DL3059
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/bash.bashrc
 CMD ["/bin/bash"]
 
-# hadolint ignore=DL3006
 FROM base as devel
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
 ARG ROS_DISTRO
 
 # Set up development environment
 RUN --mount=type=ssh \
-  ./setup-dev-env.sh -y --module all openadk \
-  && pip uninstall -y ansible ansible-core
+  ./setup-dev-env.sh -y --module all openadk --no-cuda-drivers --devel \
+  && pip uninstall -y ansible ansible-core \
+  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* "$HOME"/.cache \
+  && find / -name 'libcu*.a' -delete \
+  && find / -name 'libnv*.a' -delete 
 
-# Create entrypoint
-# hadolint ignore=DL3059
-CMD ["/bin/bash"]
+# Copy repository files
+COPY autoware.repos /autoware/
 
-# hadolint ignore=DL3006
-FROM devel as prebuilt0
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-ARG ROS_DISTRO
-
-COPY autoware.repos simulator.repos /autoware/
-
+# Install rosdep dependencies
 RUN --mount=type=ssh \
   mkdir src \
   && vcs import src < autoware.repos \
-  && vcs import src < simulator.repos \
   && apt update \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  "$HOME"/.cache \
-  /etc/apt/sources.list.d/cuda*.list \
-  /etc/apt/sources.list.d/docker.list \
-  /etc/apt/sources.list.d/nvidia-docker.list
-
-FROM prebuilt0 as prebuilt
-# Build and change permission for runtime data conversion
-RUN source /opt/ros/"$ROS_DISTRO"/setup.bash \
-  && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release \
-  && find /autoware/install -type d -exec chmod 777 {} \;
-
-RUN chmod -R 777 /autoware/install/
-RUN echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
+  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* "$HOME"/.cache
 
 # Create entrypoint
-# hadolint ignore=DL3059
+CMD ["/bin/bash"]
+
+FROM devel as prebuilt
+#TODO: test without ninja and ccache
+ENV CMAKE_GENERATOR=Ninja
+ENV CCACHE_DIR=/ccache
+
+# Build and change permission for runtime data conversion
+RUN source /opt/ros/"$ROS_DISTRO"/setup.bash \
+  && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --cmake-args \
+    " -Wno-dev" \
+    " --no-warn-unused-cli" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+  && find /autoware/install -type d -exec chmod 777 {} \; \
+  && echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
+
+# Create entrypoint
 CMD ["/bin/bash"]

@@ -31,10 +31,10 @@ while [ "$1" != "" ]; do
         # Disable installation of 'cuda-drivers' in the role 'cuda'.
         option_no_cuda_drivers=true
         ;;
-    --runtime)
+    --devel)
         # Disable installation dev package of role 'cuda' and 'tensorrt'.
-        option_runtime=true
-        ;;
+        option_devel=true
+    ;;
     *)
         args+=("$1")
         ;;
@@ -91,12 +91,10 @@ if [ "$option_no_cuda_drivers" = "true" ]; then
 fi
 
 # Check installation of dev package
-if [ "$option_runtime" = "true" ]; then
-    ansible_args+=("--extra-vars" "install_devel=false")
-    # ROS installation type, default "desktop"
-    ansible_args+=("--extra-vars" "installation_type=ros-base")
-else
+if [ "$option_devel" = "true" ]; then
     ansible_args+=("--extra-vars" "install_devel=true")
+else
+    ansible_args+=("--extra-vars" "install_devel=false")
 fi
 
 # Load env
@@ -126,7 +124,7 @@ fi
 # Install pip for ansible
 if ! (python3 -m pip --version >/dev/null 2>&1); then
     sudo apt-get -y update
-    sudo apt-get -y install python3-pip python3-venv
+    sudo apt-get -y install python3 python3-pip python3-venv
 fi
 
 # Install pipx for ansible

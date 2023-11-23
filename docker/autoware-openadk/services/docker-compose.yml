@@ -15,9 +15,9 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: "host"
     environment:
-      - ROS_DOMAIN_ID=${services_ros_domain_id}
+      - ROS_DOMAIN_ID=99
       - DISPLAY=$DISPLAY
-      - services_use_sim_time=${services_use_sim_time}
+      # - services_use_sim_time=false
     deploy:
       resources:
         reservations:
@@ -41,7 +41,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: "host"
     environment:
-      - ROS_DOMAIN_ID=${services_ros_domain_id}
+      - ROS_DOMAIN_ID=99
       - DISPLAY=$DISPLAY
-      - services_use_sim_time=${services_use_sim_time}
+      # - services_use_sim_time=false
     command: ros2 launch /launch/planning-control.launch.xml map_path:=/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit use_sim_time:=${services_use_sim_time}

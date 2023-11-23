@@ -12,7 +12,7 @@
         sudo apt update
         sudo apt install nvidia-jetpack
         ```
-    - For Ubuntu-amd64: 
+    - For Ubuntu: 
         - First check if nvidia card is available and check driver usage
         ```bash
         lspci | grep VGA # Check if nvidia cards installed
@@ -24,7 +24,7 @@
         sudo reboot
         ```
     
-    - If you have multiple gpu cards, you can select the one you want to use with prime-select
+    - If you have multiple cards or an on-board gpu, you can select the nvidia card as default with prime-select
         ```bash
         sudo prime-select nvidia
         sudo reboot
@@ -43,22 +43,19 @@
         sudo apt-get-autoremove --purge '^cuda-.*'
         ```
 
-2. Install Nvidia Container Toolkit
+2. Install Docker and Nvidia Container Toolkit
 
     ```bash
-    sudo apt-get update
-    sudo apt-get install -y nvidia-container-toolkit
-    sudo nvidia-ctk runtime configure --runtime=docker
-    sudo systemctl restart docker
+    setup-dev-env.sh docker
     ```
 
-    On amd64 architecture test with nvidia-smi
+    You can test the installation on amd64 with nvidia-smi
 
     ```bash
     sudo docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.6.2-base-ubuntu20.04 nvidia-smi
     ```
 
-    On arm64 architecture test with L4T container (https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-jetpack)
+    You can test the installation on arm64 with (https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-jetpack)
 
     ```bash
     sudo docker run -it --rm --net=host --runtime nvidia -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix nvcr.io/nvidia/l4t-base:r32.4.3

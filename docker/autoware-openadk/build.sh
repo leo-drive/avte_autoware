@@ -48,7 +48,7 @@ export platform
 export rosdistro
 
 set -x
-# Build base images
+# Build base,devel,prebuilt images
 docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "*.context=$WORKSPACE_ROOT" \
     --set "*.ssh=default" \
@@ -58,8 +58,8 @@ docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "*.args.BASE_IMAGE=$base_image" \
     --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-$platform" \
     --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:devel-$rosdistro-$platform" \
-    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform" \
-
+    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform"
+    
 # Set build targets
 if [ "$option_no_runtime" = "false" ]; then
     docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \

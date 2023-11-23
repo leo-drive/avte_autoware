@@ -1,5 +1,0 @@
-repositories:
-  simulator/scenario_simulator:
-    type: git
-    url: https://github.com/leo-drive/avte.scenario_simulator_v2.git
-    version: demo
