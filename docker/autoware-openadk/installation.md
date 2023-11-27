@@ -1,4 +1,4 @@
-# Open AD Kit Prerequisites Installation Guide
+# Open AD Kit AVTE Demo Installation Guide
 
 ### Prerequisites
 - Ubuntu 20.04 or 22.04
