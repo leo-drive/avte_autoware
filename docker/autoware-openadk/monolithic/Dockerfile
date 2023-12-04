@@ -69,7 +69,7 @@ RUN chmod +x /ros_entrypoint.sh
 
 # Copy simulation files
 RUN mkdir -p /autoware/scenario-sim
-COPY docker/autoware-openadk/etc/simulation/planning/ /autoware/scenario-sim/
+COPY docker/autoware-openadk/etc/simulation/ /autoware/scenario-sim/
 
 # Copy bash aliases
 COPY docker/autoware-openadk/etc/.bash_aliases /root/.bash_aliases
