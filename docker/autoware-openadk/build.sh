@@ -76,5 +76,6 @@ if [ "$option_no_runtime" = "false" ]; then
 #TO-DO
 # Commit after-ota image after building
 # Change planning_simulator.launch.xml rviz to false
+# upload containers via github actions
 fi
 set +x
