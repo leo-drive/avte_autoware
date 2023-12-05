@@ -49,22 +49,11 @@ RUN --mount=type=ssh \
   ./setup-dev-env.sh -y --module all openadk \
   && pip uninstall -y ansible ansible-core
 
-# Create entrypoint
-# hadolint ignore=DL3059
-CMD ["/bin/bash"]
-
-# hadolint ignore=DL3006
-FROM devel as prebuilt0
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-ARG ROS_DISTRO
-
-COPY autoware.repos simulator.repos /autoware/
-
+# get source and dependencies
+COPY autoware.repos /autoware/
 RUN --mount=type=ssh \
   mkdir src \
   && vcs import src < autoware.repos \
-  && vcs import src < simulator.repos \
   && apt update \
   && rosdep update \
   && DEBIAN_FRONTEND=noninteractive rosdep install -y --ignore-src --from-paths src --rosdistro "$ROS_DISTRO" \
@@ -75,7 +64,13 @@ RUN --mount=type=ssh \
   /etc/apt/sources.list.d/docker.list \
   /etc/apt/sources.list.d/nvidia-docker.list
 
-FROM prebuilt0 as prebuilt
+# Create entrypoint
+# hadolint ignore=DL3059
+CMD ["/bin/bash"]
+
+FROM devel as prebuilt
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Build and change permission for runtime data conversion
 RUN source /opt/ros/"$ROS_DISTRO"/setup.bash \
   && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release \

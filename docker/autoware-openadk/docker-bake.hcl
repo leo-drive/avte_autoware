@@ -49,6 +49,6 @@ target "runtime-planning-control" {
 
 target "simulator" {
   inherits = ["docker-metadata-action-planning-control"]
-  dockerfile = "docker/autoware-openadk/services/planning-control/Dockerfile"
-  target = "planning-control"
+  dockerfile = "docker/autoware-openadk/services/simulator/Dockerfile"
+  target = "simulator"
 }

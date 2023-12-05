@@ -69,7 +69,12 @@ if [ "$option_no_runtime" = "false" ]; then
         --set "*.args.PLATFORM=$platform" \
         --set "*.args.ROS_DISTRO=$rosdistro" \
         --set "*.args.BASE_IMAGE=$base_image" \
-        --set "runtime-planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:runtime-before-planning-$rosdistro-$platform" \
-        runtime-planning-control
+        --set "runtime-planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:ces-planning-before-$platform" \
+        --set "simulator.tags=ghcr.io/autowarefoundation/autoware-openadk:ces-simulator-$platform" \
+        runtime-planning-control simulator
+
+#TO-DO
+# Commit after-ota image after building
+# Change planning_simulator.launch.xml rviz to false
 fi
 set +x

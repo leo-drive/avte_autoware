@@ -3,8 +3,3 @@ repositories:
     type: git
     url: https://github.com/leo-drive/ces.scenario_simulator_v2.git
     version: master
-    
-  simulator/external:    
-    type: git    
-    url: https://github.com/tier4/embree_vendor.git 
-    version: master

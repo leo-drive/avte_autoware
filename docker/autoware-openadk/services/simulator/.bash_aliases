@@ -1,2 +1,2 @@
-# scenario planning simulator
+# scenario simulator
 alias run-planning-sim='ros2 launch scenario_test_runner scenario_test_runner.launch.py architecture_type:=awf/universe record:=false scenario:=/autoware/scenario-sim/yield_maneuver_demo.yaml sensor_model:=sample_sensor_kit vehicle_model:=sample_vehicle map_path:=/autoware/scenario-sim/map/'
