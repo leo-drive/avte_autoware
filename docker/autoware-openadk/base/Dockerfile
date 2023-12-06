@@ -76,6 +76,13 @@ RUN source /opt/ros/"$ROS_DISTRO"/setup.bash \
   && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release \
   && find /autoware/install -type d -exec chmod 777 {} \;
 
+# Get demo repos and build them again
+COPY demo.repos /autoware/
+RUN --mount=type=ssh \
+  vcs import src < demo.repos \
+  && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-select autoware_launch \
+  && find /autoware/install -type d -exec chmod 777 {} \;
+
 RUN chmod -R 777 /autoware/install/
 RUN echo "source /autoware/install/setup.bash" > /etc/bash.bashrc
 

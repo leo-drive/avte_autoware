@@ -5,46 +5,11 @@ set -e
 SCRIPT_DIR=$(readlink -f "$(dirname "$0")")
 WORKSPACE_ROOT="$SCRIPT_DIR/../../"
 
-# Parse arguments
-option_no_runtime=false
-args=()
-while [ "$1" != "" ]; do
-    case "$1" in
-    --platform)
-        option_platform="$2"
-        shift
-        ;;
-    --prebuilt-only)
-        option_no_runtime=true
-        ;;
-    *)
-        args+=("$1")
-        ;;
-    esac
-    shift
-done
-
-# Set platform
-if [ -n "$option_platform" ]; then
-    platform="$option_platform"
-else
-    platform="x86_64"
-    if [ "$(uname -m)" = "aarch64" ]; then
-        platform="aarch64"
-    fi
-fi
-
-# Load platform specific dependencies
-source "$WORKSPACE_ROOT/amd64.env"
-if [ "$platform" = "aarch64" ]; then
-    source "$WORKSPACE_ROOT/arm64.env"
-fi
 
 # https://github.com/docker/buildx/issues/484
 export BUILDKIT_STEP_LOG_MAX_SIZE=10000000
 
-# Export variables
-export platform
+source "$WORKSPACE_ROOT/amd64.env"
 export rosdistro
 
 set -x
@@ -52,29 +17,27 @@ set -x
 docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
     --set "*.context=$WORKSPACE_ROOT" \
     --set "*.ssh=default" \
-    --set "*.platform=$platform" \
-    --set "*.args.PLATFORM=$platform" \
+    --set "*.platform=aarch64" \
+    --set "*.args.PLATFORM=aarch64" \
     --set "*.args.ROS_DISTRO=$rosdistro" \
     --set "*.args.BASE_IMAGE=$base_image" \
-    --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-$platform" \
-    --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:devel-$rosdistro-$platform" \
-    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-$platform"
+    --set "base.tags=ghcr.io/autowarefoundation/autoware-openadk:base-$rosdistro-aarch64" \
+    --set "devel.tags=ghcr.io/autowarefoundation/autoware-openadk:devel-$rosdistro-aarch64" \
+    --set "prebuilt.tags=ghcr.io/autowarefoundation/autoware-openadk:prebuilt-$rosdistro-aarch64"
 
-# Set build targets
-if [ "$option_no_runtime" = "false" ]; then
-    docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
-        --set "*.context=$WORKSPACE_ROOT" \
-        --set "*.ssh=default" \
-        --set "*.platform=$platform" \
-        --set "*.args.PLATFORM=$platform" \
-        --set "*.args.ROS_DISTRO=$rosdistro" \
-        --set "*.args.BASE_IMAGE=$base_image" \
-        --set "runtime-planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:ces-planning-before-$platform" \
-        --set "simulator.tags=ghcr.io/autowarefoundation/autoware-openadk:ces-simulator-$platform" \
-        runtime-planning-control simulator
+# Build runtime images
+docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
+    --set "*.context=$WORKSPACE_ROOT" \
+    --set "*.ssh=default" \
+    --set "*.platform=aarch64" \
+    --set "*.args.PLATFORM=aarch64" \
+    --set "*.args.ROS_DISTRO=$rosdistro" \
+    --set "*.args.BASE_IMAGE=$base_image" \
+    --set "planning-control.tags=ghcr.io/autowarefoundation/autoware-openadk:ces-planning-before-$platform" \
+    --set "simulator.tags=ghcr.io/autowarefoundation/autoware-openadk:ces-simulator-aarch64" \
+    planning-control simulator
 
 #TO-DO
-# Commit after-ota image after building
+# build visualization container for x86
 # upload containers via github actions
-fi
 set +x
